@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Hostel Management - Functional Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="font-sans text-gray-800 bg-gray-50">
+
+    <!-- Navbar -->
+    <nav class="bg-indigo-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-building-user text-2xl text-indigo-400"></i>
+                    <span class="font-bold text-xl tracking-wide cursor-pointer" onclick="location.reload()">SmartHostel</span>
+                </div>
+                <div id="nav-actions" class="flex space-x-4 items-center">
+                    <button onclick="openModal('student')" class="bg-indigo-500 hover:bg-indigo-600 px-5 py-2 rounded-full font-semibold transition shadow-md">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- LANDING PAGE (Hidden after login) -->
+    <div id="landing-page">
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-4 py-16 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">Hostel Management System</h1>
+            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Fully functional mockup. Log in below to access the dynamic Student, Parent, and Warden dashboards.</p>
+            <div class="flex justify-center gap-4 flex-wrap">
+                <button onclick="openModal('student')" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-indigo-700 shadow-lg">Student Login</button>
+                <button onclick="openModal('parent')" class="bg-teal-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-teal-700 shadow-lg">Parent Login</button>
+                <button onclick="openModal('warden')" class="bg-gray-200 text-indigo-800 px-8 py-3 rounded-lg font-bold hover:bg-gray-300 shadow-lg">Warden Login</button>
+            </div>
+        </section>
+
+        <!-- Notice Board Section -->
+        <section class="max-w-4xl mx-auto px-4 pb-20">
+            <div class="bg-white rounded-xl shadow-lg border-t-4 border-indigo-600 overflow-hidden">
+                <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex items-center gap-3">
+                    <i class="fa-solid fa-bullhorn text-indigo-600 text-xl"></i>
+                    <h2 class="text-2xl font-bold text-gray-800">Notice Board</h2>
+                </div>
+                <div class="p-6">
+                    <ul class="space-y-4">
+                        <li class="flex gap-4 items-start pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                            <div class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded text-sm whitespace-nowrap">Aug 19</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Hostel Fee Deadline Update</h4>
+                                <p class="text-gray-600 text-sm mt-1">The deadline for the upcoming semester's hostel accommodation fee has been extended. Please check your portals for the updated dates.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4 items-start pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                            <div class="bg-red-100 text-red-700 font-bold px-3 py-1 rounded text-sm whitespace-nowrap">Aug 18</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Scheduled Wi-Fi Maintenance</h4>
+                                <p class="text-gray-600 text-sm mt-1">Internet services will be temporarily unavailable in Block A and B between 2:00 AM and 4:00 AM this coming Sunday.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4 items-start">
+                            <div class="bg-green-100 text-green-700 font-bold px-3 py-1 rounded text-sm whitespace-nowrap">Aug 15</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Special Mess Menu</h4>
+                                <p class="text-gray-600 text-sm mt-1">A special festive menu will be served in the main mess hall tonight. Ensure you scan your daily mess tokens at the counter.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- DASHBOARD CONTAINER (Visible after login) -->
+    <div id="dashboard" class="max-w-7xl mx-auto px-4 py-8 hidden">
+        <!-- Dashboard content gets injected here via Javascript -->
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold">Sign In</h2>
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="flex p-1 bg-gray-100 rounded-lg mb-6">
+                    <button type="button" id="role-student" onclick="setRole('student')" class="flex-1 py-2 font-semibold bg-white rounded-md shadow-sm">Student</button>
+                    <button type="button" id="role-parent" onclick="setRole('parent')" class="flex-1 py-2 font-semibold text-gray-500">Parent</button>
+                    <button type="button" id="role-warden" onclick="setRole('warden')" class="flex-1 py-2 font-semibold text-gray-500">Warden</button>
+                </div>
+                <input type="text" id="loginId" class="w-full px-4 py-2 border rounded-lg mb-4" placeholder="Any ID (e.g. S101)" required>
+                <input type="password" class="w-full px-4 py-2 border rounded-lg mb-6" placeholder="Any Password" required>
+                <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- APPLICATION LOGIC & UI GENERATION -->
+    <script>
+        // --- 1. SIMULATED DATABASE ---
+        const db = {
+            currentUser: null,
+            currentRole: 'student', 
+            students: [
+                { 
+                    id: 'S101', name: 'Rahul Kumar', room: 'A-101', present: true, lastScan: '08:00 AM', 
+                    diet: 'Veg', messToken: { date: new Date().toLocaleDateString(), consumed: false } 
+                }
+            ],
+            gatePasses: [
+                { id: 'GP1', studentId: 'S101', reason: 'Going Home', outDate: '2026-08-19T08:00', expectedReturn: '2026-08-20T18:00', parentMobile: '9876543210', studentMobile: '9123456780', roomNo: 'A-101', days: 2, status: 'Pending', returned: false }
+            ],
+            complaints: [
+                { id: 'C1', studentId: 'S101', category: 'Electrical', desc: 'Fan not working', status: 'Pending' }
+            ],
+            fees: [
+                { id: 'F1', type: 'Hostel Fee', amount: 25000, deadline: '2026-09-01', paid: false },
+                { id: 'F2', type: 'Mess Fee', amount: 4500, deadline: '2026-08-05', paid: true } 
+            ],
+            alerts: [],
+            // NEW ARRAYS FOR SOS & MESS
+            sickFoodRequests: [
+                { id: 'SF1', studentId: 'S101', date: new Date().toLocaleDateString(), meal: 'Lunch', status: 'Pending' }
+            ],
+            mealOptOuts: [],
+            foodFeedback: [],
+            // NEW ARRAY FOR LAUNDRY
+            laundry: [
+                { id: 'L1', studentId: 'S101', status: 'Washing', machineNo: 'WM-04', estCompletion: '15 mins', progress: 45 }
+            ],
+            messMenu: {
+                breakfast: 'Idli, Sambar, Chutney, Tea/Coffee',
+                lunch: 'Rice, Dal, Mixed Veg Curry, Curd',
+                dinner: 'Chapati, Paneer Butter Masala/Chicken Curry, Sweet'
+            }
+        };
+
+        // --- 2. CORE LOGICAL FUNCTIONS ---
+
+        function markAttendance(studentId) {
+            const student = db.students.find(s => s.id === studentId);
+            if(student) {
+                student.present = !student.present; 
+                student.lastScan = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                refreshDashboard();
+            }
+        }
+
+        function submitDailyAttendance(event) {
+            event.preventDefault();
+            const date = document.getElementById('uploadDate').value;
+            const checkboxes = document.querySelectorAll('.att-upload-checkbox');
+            
+            checkboxes.forEach(cb => {
+                const studentId = cb.value;
+                const isPresent = cb.checked;
+                const student = db.students.find(s => s.id === studentId);
+                
+                if(student) {
+                    student.present = isPresent;
+                    student.lastScan = 'Bulk Upload: ' + date;
+                    
+                    if(!isPresent) {
+                        triggerAlert('Daily Attendance', studentId, `Ward marked absent on ${date}`);
+                    }
+                }
+            });
+            alert('Daily attendance successfully uploaded for ' + date);
+            refreshDashboard();
+        }
+
+        function applyGatePass(event) {
+            event.preventDefault();
+            const reason = document.getElementById('gpReason').value;
+            const outDate = document.getElementById('gpOutDate').value;
+            const inDate = document.getElementById('gpInDate').value;
+            const parentMobile = document.getElementById('gpParentMobile').value;
+            const studentMobile = document.getElementById('gpStudentMobile').value;
+            const roomNo = document.getElementById('gpRoomNo').value;
+            const days = document.getElementById('gpDays').value;
+
+            db.gatePasses.push({
+                id: 'GP' + (db.gatePasses.length + 1),
+                studentId: db.currentUser,
+                reason, 
+                outDate,
+                expectedReturn: inDate,
+                parentMobile,
+                studentMobile,
+                roomNo,
+                days,
+                status: 'Pending', 
+                returned: false
+            });
+            refreshDashboard();
+        }
+
+        function approveGatePass(id, isApproved) {
+            const pass = db.gatePasses.find(p => p.id === id);
+            if(pass) pass.status = isApproved ? 'Approved' : 'Rejected';
+            if(isApproved) markAttendance(pass.studentId); 
+            refreshDashboard();
+        }
+
+        function markReturn(id) {
+            const pass = db.gatePasses.find(p => p.id === id);
+            if(pass) {
+                pass.returned = true;
+                markAttendance(pass.studentId); 
+            }
+            refreshDashboard();
+        }
+
+        function checkOverduePasses() {
+            const now = new Date();
+            db.gatePasses.forEach(pass => {
+                if(pass.status === 'Approved' && !pass.returned) {
+                    const returnTime = new Date(pass.expectedReturn);
+                    if(now > returnTime) {
+                        triggerAlert('Overdue Return', pass.studentId, `Student has not returned by deadline.`);
+                    }
+                }
+            });
+        }
+
+        function triggerAlert(type, studentId, message) {
+            const exists = db.alerts.find(a => a.studentId === studentId && a.type === type && a.message === message);
+            if(!exists) {
+                db.alerts.push({ id: Date.now(), type, studentId, message, time: new Date().toLocaleTimeString() });
+            }
+        }
+
+        function payFee(feeId) {
+            const fee = db.fees.find(f => f.id === feeId);
+            if(fee) fee.paid = true;
+            refreshDashboard();
+        }
+
+        function checkFeeDeadlines() {
+            const today = new Date('2026-08-19'); 
+            db.fees.forEach(fee => {
+                if(!fee.paid && new Date(fee.deadline) < today) {
+                    triggerAlert('Fee Overdue', db.currentRole === 'parent' ? db.currentUser : 'S101', `${fee.type} is overdue! Late fees may apply.`);
+                }
+            });
+        }
+
+        function submitComplaint(event) {
+            event.preventDefault();
+            db.complaints.push({
+                id: 'C' + (db.complaints.length + 1),
+                studentId: db.currentUser,
+                category: document.getElementById('compCategory').value,
+                desc: document.getElementById('compDesc').value,
+                status: 'Pending'
+            });
+            refreshDashboard();
+        }
+
+        function updateComplaint(id, newStatus) {
+            const comp = db.complaints.find(c => c.id === id);
+            if(comp) comp.status = newStatus;
+            refreshDashboard();
+        }
+
+        function scanMessToken() {
+            const student = db.students.find(s => s.id === db.currentUser);
+            if(student) {
+                student.messToken.consumed = true;
+                refreshDashboard();
+            }
+        }
+
+        // NEW LOGIC: SOS & Medical
+        function triggerSOS() {
+            const me = db.students.find(s => s.id === db.currentUser);
+            const location = me ? me.room : 'Unknown';
+            const msg = `EMERGENCY SOS Triggered from Room ${location}. Alerts sent to Campus Security & Health Center.`;
+            triggerAlert('EMERGENCY SOS', db.currentUser, msg);
+            alert(`🚨 SOS ACTIVATED!\n\nLocation: Room ${location}\nNotifications instantly sent to Warden, Campus Security, and Health Center.`);
+            refreshDashboard();
+        }
+
+        function requestSickFood(event) {
+            event.preventDefault();
+            const meal = document.getElementById('sickMeal').value;
+            db.sickFoodRequests.push({
+                id: 'SF' + (db.sickFoodRequests.length + 1),
+                studentId: db.currentUser,
+                date: new Date().toLocaleDateString(),
+                meal: meal,
+                status: 'Pending'
+            });
+            alert('Sick-leave food requested. The mess manager will deliver it to your room.');
+            refreshDashboard();
+        }
+
+        // NEW LOGIC: Mess Menu Opt-Out & Feedback
+        function submitOptOut(event) {
+            event.preventDefault();
+            const meal = document.getElementById('optOutMeal').value;
+            db.mealOptOuts.push({
+                id: 'MO' + (db.mealOptOuts.length + 1),
+                studentId: db.currentUser,
+                date: new Date().toLocaleDateString(),
+                meal: meal
+            });
+            alert(`You have successfully opted out of ${meal} today. Billing will be adjusted.`);
+            refreshDashboard();
+        }
+
+        function submitFeedback(event) {
+            event.preventDefault();
+            const meal = document.getElementById('fbMeal').value;
+            const rating = document.getElementById('fbRating').value;
+            db.foodFeedback.push({
+                id: 'FF' + (db.foodFeedback.length + 1),
+                studentId: db.currentUser,
+                date: new Date().toLocaleDateString(),
+                meal: meal,
+                rating: rating
+            });
+            alert('Thank you! Your feedback has been recorded for the mess management.');
+            refreshDashboard();
+        }
+
+
+        // --- 3. UI RENDERING & DASHBOARDS ---
+
+        function handleLogin(e) {
+            e.preventDefault();
+            db.currentUser = document.getElementById('loginId').value.toUpperCase() || 'S101';
+            
+            if(!db.students.find(s => s.id === db.currentUser) && db.currentRole !== 'warden') {
+                db.students.push({ 
+                    id: db.currentUser, name: 'Test Student', room: 'B-205', present: true, lastScan: '-',
+                    diet: 'Non-Veg', messToken: { date: new Date().toLocaleDateString(), consumed: false }
+                });
+            }
+
+            closeModal();
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('nav-actions').innerHTML = `<button onclick="location.reload()" class="text-red-300 hover:text-white font-bold">Logout</button>`;
+            
+            checkOverduePasses();
+            checkFeeDeadlines();
+            refreshDashboard();
+        }
+
+        function refreshDashboard() {
+            const container = document.getElementById('dashboard');
+            if(db.currentRole === 'student') {
+                container.innerHTML = renderStudentDashboard();
+            } else if (db.currentRole === 'parent') {
+                container.innerHTML = renderParentDashboard();
+            } else {
+                container.innerHTML = renderWardenDashboard();
+            }
+        }
+
+        // --- STUDENT DASHBOARD VIEW ---
+        function renderStudentDashboard() {
+            const myPasses = db.gatePasses.filter(p => p.studentId === db.currentUser);
+            const myFees = db.fees; 
+            const myComplaints = db.complaints.filter(c => c.studentId === db.currentUser);
+            const mySickFood = db.sickFoodRequests.filter(sf => sf.studentId === db.currentUser);
+            const myLaundry = db.laundry.filter(l => l.studentId === db.currentUser);
+            const me = db.students.find(s => s.id === db.currentUser);
+            
+            const todayStr = new Date().toLocaleDateString();
+            if(me.messToken.date !== todayStr) {
+                me.messToken.date = todayStr;
+                me.messToken.consumed = false;
+            }
+            const uniqueQrData = `${me.id}-${todayStr.replace(/\//g, '')}-${me.diet.toUpperCase()}`;
+
+            return `
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold">Student Portal - ${db.currentUser}</h2>
+                    <span class="px-4 py-2 rounded-full font-bold text-sm ${me.present ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                        Status: ${me.present ? 'Inside Campus' : 'Outside Campus'}
+                    </span>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-6 items-start">
+                    
+                    <!-- Side Navigation Menu -->
+                    <div class="w-full lg:w-64 bg-white rounded-lg shadow p-4 sticky top-20 shrink-0 border-t-4 border-gray-800">
+                        <h3 class="font-bold text-gray-800 mb-3 uppercase text-sm tracking-wider"><i class="fa-solid fa-bars mr-2"></i> Quick Menu</h3>
+                        <nav class="flex flex-col space-y-1">
+                            <a href="#s-sos" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-700 transition">Emergency & Medical</a>
+                            <a href="#s-gatepass" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition">Gate Pass</a>
+                            <a href="#s-messtoken" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition">Daily Mess Token</a>
+                            <a href="#s-messmenu" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-orange-50 hover:text-orange-700 transition">Menu & Feedback</a>
+                            <a href="#s-fees" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-yellow-50 hover:text-yellow-700 transition">Fees & Deadlines</a>
+                            <a href="#s-complaints" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-purple-50 hover:text-purple-700 transition">Lodge Complaint</a>
+                            <a href="#s-laundry" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-cyan-50 hover:text-cyan-700 transition">Laundry Progress</a>
+                        </nav>
+                    </div>
+
+                    <!-- Main Content Grid -->
+                    <div class="flex-1 w-full grid md:grid-cols-2 gap-6">
+
+                        <!-- NEW: SOS & Medical Assistance -->
+                        <div id="s-sos" class="bg-white p-6 rounded-lg shadow border-t-4 border-red-600 md:col-span-2 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4 text-red-700"><i class="fa-solid fa-truck-medical mr-2"></i>Emergency SOS & Medical</h3>
+                            <div class="grid md:grid-cols-2 gap-6 items-center">
+                                <div class="text-center p-4">
+                                    <button onclick="triggerSOS()" class="bg-red-600 hover:bg-red-700 text-white font-extrabold py-6 px-10 rounded-full shadow-lg text-lg transition transform hover:scale-105 animate-pulse w-full max-w-sm">
+                                        <i class="fa-solid fa-bell mr-2"></i> TAP FOR EMERGENCY SOS
+                                    </button>
+                                    <p class="text-xs text-gray-500 mt-3">Triggers instant location alert to Warden, Campus Security & Health Center.</p>
+                                </div>
+                                
+                                <div class="bg-red-50 p-4 rounded border border-red-100">
+                                    <h4 class="font-bold text-gray-800 mb-2">Sick-Leave Food Request</h4>
+                                    <form onsubmit="requestSickFood(event)" class="flex gap-2">
+                                        <select id="sickMeal" class="border p-2 rounded flex-1 text-sm" required>
+                                            <option value="">Select Meal...</option>
+                                            <option value="Breakfast">Breakfast</option>
+                                            <option value="Lunch">Lunch</option>
+                                            <option value="Dinner">Dinner</option>
+                                        </select>
+                                        <button class="bg-gray-800 text-white px-4 py-2 rounded text-sm font-bold">Request Room Delivery</button>
+                                    </form>
+                                    ${mySickFood.length > 0 ? `
+                                        <div class="mt-3 text-sm">
+                                            <span class="font-semibold text-gray-600">Today's Requests: </span>
+                                            ${mySickFood.map(sf => `<span class="bg-white border px-2 py-1 rounded text-xs ml-1">${sf.meal} (${sf.status})</span>`).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="s-gatepass" class="bg-white p-6 rounded-lg shadow border-t-4 border-indigo-500 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Apply Gate Pass</h3>
+                            <form onsubmit="applyGatePass(event)" class="space-y-3">
+                                <input type="text" id="gpReason" placeholder="Reason for leaving (e.g. Medical, Going Home)" required class="w-full border p-2 rounded text-sm">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div><label class="text-xs text-gray-500 font-semibold">Out Date & Time</label><input type="datetime-local" id="gpOutDate" required class="w-full border p-2 rounded text-sm"></div>
+                                    <div><label class="text-xs text-gray-500 font-semibold">In Date & Time</label><input type="datetime-local" id="gpInDate" required class="w-full border p-2 rounded text-sm"></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div><label class="text-xs text-gray-500 font-semibold">Parent Mobile No.</label><input type="tel" id="gpParentMobile" placeholder="e.g. 9876543210" required class="w-full border p-2 rounded text-sm"></div>
+                                    <div><label class="text-xs text-gray-500 font-semibold">Student Mobile No.</label><input type="tel" id="gpStudentMobile" placeholder="e.g. 9123456780" required class="w-full border p-2 rounded text-sm"></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div><label class="text-xs text-gray-500 font-semibold">Room Number</label><input type="text" id="gpRoomNo" value="${me.room}" required class="w-full border p-2 rounded text-sm"></div>
+                                    <div><label class="text-xs text-gray-500 font-semibold">Proposed Days</label><input type="number" id="gpDays" placeholder="No. of days" required min="1" class="w-full border p-2 rounded text-sm"></div>
+                                </div>
+                                <button class="w-full bg-indigo-600 text-white py-2 rounded font-bold mt-2">Submit Application</button>
+                            </form>
+                            <div class="mt-4 border-t pt-4">
+                                <h4 class="font-bold text-sm text-gray-500">My Passes</h4>
+                                ${myPasses.map(p => `
+                                    <div class="flex flex-col text-sm mt-2 p-3 bg-gray-50 rounded border">
+                                        <div class="flex justify-between font-semibold">
+                                            <span>${p.reason} (${p.days} Days)</span>
+                                            <span class="${p.status === 'Approved' ? 'text-green-600' : p.status === 'Rejected' ? 'text-red-600' : 'text-orange-500'}">${p.status}</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Out: ${p.outDate ? new Date(p.outDate).toLocaleString() : 'N/A'}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="s-messtoken" class="bg-white p-6 rounded-lg shadow border-t-4 border-emerald-500 flex flex-col justify-between scroll-mt-24">
+                            <div>
+                                <h3 class="text-xl font-bold mb-1">Daily Mess Token</h3>
+                                <p class="text-sm text-gray-500 mb-6">Valid only for ${todayStr}</p>
+                            </div>
+                            <div class="text-center flex-1 flex flex-col items-center justify-center">
+                                <p class="font-bold text-lg mb-4">Diet Preference: <span class="${me.diet === 'Veg' ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'} px-3 py-1 rounded-full text-sm uppercase tracking-wide">${me.diet}</span></p>
+                                
+                                ${me.messToken.consumed ? `
+                                    <div class="bg-gray-50 w-full max-w-xs p-8 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center shadow-inner">
+                                        <i class="fa-solid fa-circle-check text-5xl text-gray-400 mb-3"></i>
+                                        <p class="font-extrabold text-gray-600 text-xl">Token Consumed</p>
+                                        <p class="text-xs text-gray-400 mt-1">Cannot be scanned again today</p>
+                                    </div>
+                                ` : `
+                                    <div class="bg-emerald-50 w-full max-w-xs p-6 rounded-xl border-2 border-emerald-200 flex flex-col items-center justify-center shadow-sm relative">
+                                        <div class="bg-white p-2 rounded shadow-sm mb-3 inline-block">
+                                            <i class="fa-solid fa-qrcode text-7xl text-gray-800"></i>
+                                        </div>
+                                        <p class="text-[10px] font-mono text-gray-500 break-all mb-4 bg-white px-2 py-1 rounded border">ID: ${uniqueQrData}</p>
+                                        <button onclick="scanMessToken()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-lg font-bold shadow-md transition-colors">
+                                            <i class="fa-solid fa-camera mr-2"></i>Simulate Scan
+                                        </button>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+
+                        <!-- NEW: Mess Menu, Opt-Out & Feedback -->
+                        <div id="s-messmenu" class="bg-white p-6 rounded-lg shadow border-t-4 border-orange-500 md:col-span-2 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Live Mess Menu & Feedback</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-gray-700 mb-3">Today's Menu</h4>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="p-2 border rounded bg-gray-50"><b>Breakfast:</b> ${db.messMenu.breakfast}</div>
+                                        <div class="p-2 border rounded bg-gray-50"><b>Lunch:</b> ${db.messMenu.lunch}</div>
+                                        <div class="p-2 border rounded bg-gray-50"><b>Dinner:</b> ${db.messMenu.dinner}</div>
+                                    </div>
+
+                                    <h4 class="font-semibold text-gray-700 mt-4 mb-2">Meal Opt-Out (Save Food Waste)</h4>
+                                    <form onsubmit="submitOptOut(event)" class="flex gap-2">
+                                        <select id="optOutMeal" class="border p-2 rounded flex-1 text-sm" required>
+                                            <option value="">Select Meal to Skip...</option>
+                                            <option value="Breakfast">Breakfast</option>
+                                            <option value="Lunch">Lunch</option>
+                                            <option value="Dinner">Dinner</option>
+                                        </select>
+                                        <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded text-sm font-bold">Skip Meal</button>
+                                    </form>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-semibold text-gray-700 mb-3">Rate Today's Food</h4>
+                                    <form onsubmit="submitFeedback(event)" class="bg-orange-50 p-4 border border-orange-100 rounded space-y-3">
+                                        <select id="fbMeal" class="w-full border p-2 rounded text-sm" required>
+                                            <option value="">Select Meal...</option>
+                                            <option value="Breakfast">Breakfast</option>
+                                            <option value="Lunch">Lunch</option>
+                                            <option value="Dinner">Dinner</option>
+                                        </select>
+                                        <select id="fbRating" class="w-full border p-2 rounded text-sm" required>
+                                            <option value="">Rate Quality...</option>
+                                            <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
+                                            <option value="4">⭐⭐⭐⭐ - Good</option>
+                                            <option value="3">⭐⭐⭐ - Average</option>
+                                            <option value="2">⭐⭐ - Poor</option>
+                                            <option value="1">⭐ - Terrible</option>
+                                        </select>
+                                        <button class="w-full bg-gray-800 text-white py-2 rounded text-sm font-bold">Submit Rating</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="s-fees" class="bg-white p-6 rounded-lg shadow border-t-4 border-yellow-500 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Fees & Deadlines</h3>
+                            <div class="space-y-3">
+                                ${myFees.map(f => `
+                                    <div class="flex justify-between items-center p-3 border rounded ${f.paid ? 'bg-gray-50' : 'bg-red-50 border-red-200'}">
+                                        <div>
+                                            <p class="font-bold">${f.type}</p>
+                                            <p class="text-xs text-gray-500">Due: ${f.deadline}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-bold">₹${f.amount}</p>
+                                            ${f.paid ? '<span class="text-green-600 text-sm font-bold">Paid</span>' : `<button onclick="payFee('${f.id}')" class="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600">Pay Now</button>`}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="s-complaints" class="bg-white p-6 rounded-lg shadow border-t-4 border-purple-500 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Lodge Complaint</h3>
+                            <form onsubmit="submitComplaint(event)" class="flex flex-col gap-3">
+                                <select id="compCategory" class="border p-2 rounded">
+                                    <option>Electrical</option><option>Plumbing</option><option>Internet</option><option>Other</option>
+                                </select>
+                                <input type="text" id="compDesc" placeholder="Describe issue..." required class="border p-2 rounded">
+                                <button class="bg-purple-600 text-white px-6 py-2 rounded font-bold">Report</button>
+                            </form>
+                            <div class="mt-4 pt-4 border-t space-y-2">
+                                ${myComplaints.map(c => `
+                                    <div class="bg-gray-50 p-2 rounded border text-sm flex justify-between items-center">
+                                        <div>
+                                            <span class="font-bold">${c.category}</span>
+                                            <span class="text-gray-600 ml-2">${c.desc}</span>
+                                        </div>
+                                        <span class="text-purple-600 font-semibold text-xs bg-purple-100 px-2 py-1 rounded-full">${c.status}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- NEW: Laundry Progress -->
+                        <div id="s-laundry" class="bg-white p-6 rounded-lg shadow border-t-4 border-cyan-500 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Live Laundry Progress</h3>
+                            <div class="space-y-4">
+                                ${myLaundry.length > 0 ? myLaundry.map(l => `
+                                    <div class="bg-cyan-50 p-4 rounded border border-cyan-100">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fa-solid fa-shirt text-cyan-600 text-3xl"></i>
+                                                <div>
+                                                    <p class="font-bold text-gray-800">Machine: ${l.machineNo}</p>
+                                                    <p class="text-sm text-gray-600">Status: <span class="font-semibold text-cyan-700">${l.status}</span></p>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">Est. Completion</p>
+                                                <p class="font-bold text-xl text-gray-800">${l.estCompletion}</p>
+                                            </div>
+                                        </div>
+                                        <!-- Progress Bar -->
+                                        <div class="w-full bg-cyan-200 rounded-full h-2.5">
+                                            <div class="bg-cyan-600 h-2.5 rounded-full relative" style="width: ${l.progress}%">
+                                                <div class="absolute -right-2 -top-1 w-4 h-4 bg-white border-2 border-cyan-600 rounded-full"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('') : '<p class="text-gray-500 text-sm">No active laundry cycles found.</p>'}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- PARENT DASHBOARD VIEW ---
+        function renderParentDashboard() {
+            const wardId = db.currentUser;
+            const me = db.students.find(s => s.id === wardId);
+            const wardPasses = db.gatePasses.filter(p => p.studentId === wardId);
+            const wardAlerts = db.alerts.filter(a => a.studentId === wardId);
+            const myFees = db.fees; 
+
+            return `
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold">Parent Dashboard</h2>
+                        <p class="text-gray-500 mt-1">Monitoring activity for Ward: <span class="font-bold text-gray-800">${wardId} (${me.name})</span></p>
+                    </div>
+                    <span class="px-4 py-2 rounded-full font-bold text-sm ${me.present ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                        Current Status: ${me.present ? 'Inside Campus' : 'Outside Campus'}
+                    </span>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-6 items-start">
+                    
+                    <!-- Side Navigation Menu -->
+                    <div class="w-full lg:w-64 bg-white rounded-lg shadow p-4 sticky top-20 shrink-0 border-t-4 border-gray-800">
+                        <h3 class="font-bold text-gray-800 mb-3 uppercase text-sm tracking-wider"><i class="fa-solid fa-bars mr-2"></i> Quick Menu</h3>
+                        <nav class="flex flex-col space-y-1">
+                            <a href="#p-presence" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-green-50 hover:text-green-700 transition">Presence Status</a>
+                            <a href="#p-alerts" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-700 transition">Alerts & Notifications</a>
+                            <a href="#p-gatepass" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition">Gate Pass History</a>
+                            <a href="#p-fees" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-yellow-50 hover:text-yellow-700 transition">Fee Details</a>
+                        </nav>
+                    </div>
+
+                    <!-- Main Content Grid -->
+                    <div class="flex-1 w-full grid md:grid-cols-2 gap-6">
+                        <div id="p-presence" class="bg-white p-6 rounded-lg shadow border-t-4 border-green-500 md:col-span-2 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-2">Live Hostel Presence Status</h3>
+                            <div class="flex items-center gap-4 mt-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center ${me.present ? 'bg-green-100' : 'bg-red-100'}">
+                                    <i class="fa-solid ${me.present ? 'fa-building-circle-check text-green-600' : 'fa-person-walking-arrow-right text-red-600'} text-3xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold ${me.present ? 'text-green-600' : 'text-red-600'}">${me.present ? 'Inside Hostel' : 'Currently Out'}</p>
+                                    <p class="text-gray-500 text-sm">Last Update: ${me.lastScan}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="p-alerts" class="bg-white p-6 rounded-lg shadow border-t-4 border-red-500 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4 text-red-600">Alerts & Notifications</h3>
+                            ${wardAlerts.length === 0 ? '<p class="text-gray-500 text-sm">No recent alerts for your ward.</p>' : ''}
+                            <div class="space-y-3">
+                                ${wardAlerts.map(a => `
+                                    <div class="bg-red-50 p-3 rounded border border-red-200">
+                                        <div class="flex justify-between">
+                                            <span class="font-bold text-red-800">${a.type}</span>
+                                            <span class="text-xs text-red-500">${a.time}</span>
+                                        </div>
+                                        <p class="text-sm text-red-700 mt-1">${a.message}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="p-gatepass" class="bg-white p-6 rounded-lg shadow border-t-4 border-blue-500 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Gate Pass History</h3>
+                            ${wardPasses.length === 0 ? '<p class="text-gray-500 text-sm">No gate pass records found.</p>' : ''}
+                            <div class="space-y-3">
+                                ${wardPasses.map(p => `
+                                    <div class="p-4 border rounded text-sm ${p.status === 'Approved' && !p.returned ? 'bg-orange-50 border-orange-200' : 'bg-gray-50'}">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="font-bold text-gray-800">${p.reason} <span class="font-normal text-gray-500">(${p.days} Days)</span></span>
+                                            <span class="font-bold ${p.status === 'Approved' ? 'text-green-600' : p.status === 'Rejected' ? 'text-red-600' : 'text-orange-500'}">${p.status}</span>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2 text-gray-600 mb-2 text-xs">
+                                            <div><b>Out:</b> <br>${p.outDate ? new Date(p.outDate).toLocaleString() : 'N/A'}</div>
+                                            <div><b>In:</b> <br>${new Date(p.expectedReturn).toLocaleString()}</div>
+                                        </div>
+                                        <p class="mt-1 font-semibold ${p.returned ? 'text-green-600' : 'text-orange-600'}">Status: ${p.returned ? 'Safely Returned' : (p.status === 'Approved' ? 'Currently Out' : 'N/A')}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="p-fees" class="bg-white p-6 rounded-lg shadow border-t-4 border-yellow-500 md:col-span-2 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Fee Details</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                ${myFees.map(f => `
+                                    <div class="flex justify-between items-center p-3 border rounded ${f.paid ? 'bg-gray-50' : 'bg-red-50 border-red-200'}">
+                                        <div>
+                                            <p class="font-bold">${f.type}</p>
+                                            <p class="text-xs text-gray-500">Due: ${f.deadline}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-bold">₹${f.amount}</p>
+                                            <span class="${f.paid ? 'text-green-600' : 'text-red-600'} text-sm font-bold">${f.paid ? 'Paid' : 'Unpaid'}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- WARDEN DASHBOARD VIEW ---
+        function renderWardenDashboard() {
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            return `
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold">Warden Control Panel</h2>
+                    <button onclick="checkOverduePasses(); refreshDashboard()" class="bg-blue-100 text-blue-700 px-4 py-2 rounded font-bold text-sm"><i class="fa-solid fa-rotate"></i> Refresh System</button>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-6 items-start">
+                    
+                    <!-- Side Navigation Menu -->
+                    <div class="w-full lg:w-64 bg-white rounded-lg shadow p-4 sticky top-20 shrink-0 border-t-4 border-gray-800">
+                        <h3 class="font-bold text-gray-800 mb-3 uppercase text-sm tracking-wider"><i class="fa-solid fa-bars mr-2"></i> Quick Menu</h3>
+                        <nav class="flex flex-col space-y-1">
+                            <a href="#w-medical" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-700 transition">Medical & SOS Logs</a>
+                            <a href="#w-upload" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-teal-50 hover:text-teal-700 transition">Attendance Upload</a>
+                            <a href="#w-gatepass" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition">Gate Pass Requests</a>
+                            <a href="#w-messops" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-orange-50 hover:text-orange-700 transition">Mess Operations</a>
+                            <a href="#w-alerts" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-700 transition">System Alerts</a>
+                            <a href="#w-monitor" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-green-50 hover:text-green-700 transition">Attendance Monitor</a>
+                            <a href="#w-complaints" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-purple-50 hover:text-purple-700 transition">Manage Complaints</a>
+                        </nav>
+                    </div>
+
+                    <!-- Main Content Grid -->
+                    <div class="flex-1 w-full grid md:grid-cols-2 gap-6">
+
+                        <!-- NEW: Medical & SOS Logs -->
+                        <div id="w-medical" class="bg-white p-6 rounded-lg shadow border-t-4 border-red-600 md:col-span-2 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4 text-red-700"><i class="fa-solid fa-notes-medical mr-2"></i>Medical & Sick Food Logs</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse text-sm">
+                                    <thead class="bg-red-50">
+                                        <tr>
+                                            <th class="p-2 border-b">ID</th>
+                                            <th class="p-2 border-b">Student</th>
+                                            <th class="p-2 border-b">Date</th>
+                                            <th class="p-2 border-b">Meal Requested</th>
+                                            <th class="p-2 border-b">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${db.sickFoodRequests.length === 0 ? '<tr><td colspan="5" class="p-4 text-center text-gray-500">No requests today.</td></tr>' : ''}
+                                        ${db.sickFoodRequests.map(sf => `
+                                            <tr class="hover:bg-gray-50 border-b">
+                                                <td class="p-2 font-semibold text-gray-700">${sf.id}</td>
+                                                <td class="p-2 font-bold">${sf.studentId}</td>
+                                                <td class="p-2">${sf.date}</td>
+                                                <td class="p-2">${sf.meal}</td>
+                                                <td class="p-2"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-bold">${sf.status}</span></td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="w-upload" class="bg-white p-6 rounded-lg shadow border-t-4 border-teal-500 md:col-span-2 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Daily Attendance Upload</h3>
+                            <form onsubmit="submitDailyAttendance(event)" class="bg-gray-50 p-4 border rounded">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <label class="font-semibold text-gray-700">Select Date:</label>
+                                    <input type="date" id="uploadDate" required value="${todayStr}" class="border p-2 rounded">
+                                </div>
+                                <div class="max-h-48 overflow-y-auto mb-4 border bg-white rounded">
+                                    <table class="w-full text-left border-collapse text-sm">
+                                        <thead class="bg-gray-100 sticky top-0 shadow-sm">
+                                            <tr>
+                                                <th class="p-2 border-b w-16 text-center">Present</th>
+                                                <th class="p-2 border-b">ID</th>
+                                                <th class="p-2 border-b">Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${db.students.map(s => `
+                                                <tr class="hover:bg-gray-50 border-b">
+                                                    <td class="p-2 text-center">
+                                                        <input type="checkbox" value="${s.id}" class="att-upload-checkbox w-4 h-4 text-teal-600 rounded" ${s.present ? 'checked' : ''}>
+                                                    </td>
+                                                    <td class="p-2 font-semibold text-gray-700">${s.id}</td>
+                                                    <td class="p-2">${s.name}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded font-bold shadow transition">Submit Daily Attendance</button>
+                            </form>
+                        </div>
+                        
+                        <div id="w-gatepass" class="bg-white p-6 rounded-lg shadow border-t-4 border-blue-500 md:col-span-2 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Gate Pass Requests & Active Passes</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-500 mb-2 uppercase">Pending Requests</h4>
+                                    ${db.gatePasses.filter(p => p.status === 'Pending').length === 0 ? '<p class="text-gray-500 text-sm">No pending requests.</p>' : ''}
+                                    ${db.gatePasses.filter(p => p.status === 'Pending').map(p => `
+                                        <div class="border p-4 rounded mb-3 bg-gray-50">
+                                            <div class="flex justify-between font-bold mb-2">
+                                                <span class="text-indigo-700">${p.studentId} (Room: ${p.roomNo || 'N/A'})</span>
+                                                <span class="text-gray-600">${p.days} Days</span>
+                                            </div>
+                                            <p class="text-sm font-semibold mb-2">Reason: ${p.reason}</p>
+                                            <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3 border-t pt-2 border-b pb-2">
+                                                <div><b>Out:</b><br> ${p.outDate ? new Date(p.outDate).toLocaleString() : 'N/A'}</div>
+                                                <div><b>In:</b><br> ${new Date(p.expectedReturn).toLocaleString()}</div>
+                                                <div><b>Parent Mobile:</b><br> ${p.parentMobile || 'N/A'}</div>
+                                                <div><b>Student Mobile:</b><br> ${p.studentMobile || 'N/A'}</div>
+                                            </div>
+                                            <div class="flex gap-2">
+                                                <button onclick="approveGatePass('${p.id}', true)" class="flex-1 bg-green-500 text-white px-3 py-2 rounded text-sm font-bold shadow hover:bg-green-600">Approve</button>
+                                                <button onclick="approveGatePass('${p.id}', false)" class="flex-1 bg-red-500 text-white px-3 py-2 rounded text-sm font-bold shadow hover:bg-red-600">Reject</button>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-500 mb-2 uppercase">Active Passes (Out of Campus)</h4>
+                                    ${db.gatePasses.filter(p => p.status === 'Approved' && !p.returned).length === 0 ? '<p class="text-gray-500 text-sm">No active passes.</p>' : ''}
+                                    ${db.gatePasses.filter(p => p.status === 'Approved' && !p.returned).map(p => `
+                                        <div class="bg-orange-50 p-4 rounded text-sm border border-orange-200 mb-3 shadow-sm">
+                                            <div class="flex justify-between font-bold mb-1 text-orange-800">
+                                                <span>${p.studentId} (Room: ${p.roomNo || 'N/A'})</span>
+                                                <span>${p.days} Days</span>
+                                            </div>
+                                            <p class="text-xs text-gray-600 mb-3"><b>Parent Contact:</b> ${p.parentMobile || 'N/A'}</p>
+                                            <div class="flex justify-between items-end border-t border-orange-200 pt-2">
+                                                <div class="text-xs">
+                                                    <span class="block text-gray-500">Return Deadline:</span>
+                                                    <span class="font-bold ${new Date() > new Date(p.expectedReturn) ? 'text-red-600' : 'text-orange-700'}">${new Date(p.expectedReturn).toLocaleString()}</span>
+                                                </div>
+                                                <button onclick="markReturn('${p.id}')" class="bg-orange-500 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-orange-600 shadow">Mark Returned</button>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NEW: Mess Operations Data -->
+                        <div id="w-messops" class="bg-white p-6 rounded-lg shadow border-t-4 border-orange-500 md:col-span-2 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Mess Operations Overview</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-gray-700 mb-2">Today's Opt-Outs (Waste Reduction)</h4>
+                                    <ul class="space-y-2">
+                                        <li class="p-2 bg-orange-50 border rounded flex justify-between">
+                                            <span>Breakfast Skips:</span> <span class="font-bold text-orange-600">${db.mealOptOuts.filter(m => m.meal === 'Breakfast').length} Students</span>
+                                        </li>
+                                        <li class="p-2 bg-orange-50 border rounded flex justify-between">
+                                            <span>Lunch Skips:</span> <span class="font-bold text-orange-600">${db.mealOptOuts.filter(m => m.meal === 'Lunch').length} Students</span>
+                                        </li>
+                                        <li class="p-2 bg-orange-50 border rounded flex justify-between">
+                                            <span>Dinner Skips:</span> <span class="font-bold text-orange-600">${db.mealOptOuts.filter(m => m.meal === 'Dinner').length} Students</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-700 mb-2">Recent Food Feedback</h4>
+                                    <div class="space-y-2 max-h-40 overflow-y-auto pr-2">
+                                        ${db.foodFeedback.length === 0 ? '<p class="text-sm text-gray-500">No feedback submitted yet.</p>' : ''}
+                                        ${db.foodFeedback.map(fb => `
+                                            <div class="text-sm border-b pb-2 mb-2">
+                                                <span class="font-bold text-gray-800">${fb.studentId}</span> on ${fb.meal}: 
+                                                <span class="text-yellow-500 font-bold">${'⭐'.repeat(fb.rating)}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="w-alerts" class="bg-white p-6 rounded-lg shadow border-t-4 border-red-500 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4 text-red-600"><i class="fa-solid fa-bell"></i> System Alerts</h3>
+                            ${db.alerts.length === 0 ? '<p class="text-gray-500 text-sm">All clear. No alerts.</p>' : ''}
+                            <div class="space-y-3">
+                                ${db.alerts.map(a => `
+                                    <div class="bg-red-50 p-3 rounded border border-red-200">
+                                        <div class="flex justify-between">
+                                            <span class="font-bold text-red-800">${a.type}</span>
+                                            <span class="text-xs text-red-500">${a.time}</span>
+                                        </div>
+                                        <p class="text-sm text-red-700 mt-1">${a.studentId}: ${a.message}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="w-monitor" class="bg-white p-6 rounded-lg shadow border-t-4 border-green-500 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Hostel Attendance Monitor</h3>
+                            <table class="w-full text-left border-collapse text-sm">
+                                <tr class="bg-gray-100"><th class="p-2">ID</th><th class="p-2">Room</th><th class="p-2">Status</th><th class="p-2">Action</th></tr>
+                                ${db.students.map(s => `
+                                    <tr class="border-t">
+                                        <td class="p-2 font-bold">${s.id}</td>
+                                        <td class="p-2">${s.room}</td>
+                                        <td class="p-2"><span class="${s.present ? 'text-green-600' : 'text-red-600'} font-bold">${s.present ? 'Present' : 'Absent'}</span></td>
+                                        <td class="p-2"><button onclick="markAttendance('${s.id}')" class="text-xs bg-gray-200 px-2 py-1 rounded">Toggle</button></td>
+                                    </tr>
+                                `).join('')}
+                            </table>
+                        </div>
+
+                        <div id="w-complaints" class="bg-white p-6 rounded-lg shadow border-t-4 border-purple-500 scroll-mt-24">
+                            <h3 class="text-xl font-bold mb-4">Manage Complaints</h3>
+                            <table class="w-full text-left text-sm">
+                                <tr class="bg-gray-100"><th class="p-2">ID</th><th class="p-2">Student</th><th class="p-2">Issue</th><th class="p-2">Status</th><th class="p-2">Action</th></tr>
+                                ${db.complaints.map(c => `
+                                    <tr class="border-t">
+                                        <td class="p-2">${c.id}</td><td class="p-2">${c.studentId}</td><td class="p-2">${c.category} - ${c.desc}</td>
+                                        <td class="p-2 font-bold">${c.status}</td>
+                                        <td class="p-2">
+                                            ${c.status === 'Pending' ? `<button onclick="updateComplaint('${c.id}', 'In Progress')" class="text-yellow-600 hover:underline">Mark In-Progress</button>` : ''}
+                                            ${c.status === 'In Progress' ? `<button onclick="updateComplaint('${c.id}', 'Resolved')" class="text-green-600 hover:underline">Mark Resolved</button>` : ''}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- MODAL UTILS ---
+        function openModal(role) {
+            document.getElementById('loginModal').classList.remove('hidden');
+            setRole(role);
+        }
+        function closeModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        
+        function setRole(role) {
+            db.currentRole = role;
+            const sBtn = document.getElementById('role-student');
+            const pBtn = document.getElementById('role-parent'); 
+            const wBtn = document.getElementById('role-warden');
+            const loginInput = document.getElementById('loginId');
+            
+            sBtn.className = pBtn.className = wBtn.className = 'flex-1 py-2 font-semibold text-gray-500 bg-transparent';
+            
+            if(role === 'student') {
+                sBtn.className = 'flex-1 py-2 font-semibold bg-white rounded-md shadow-sm text-gray-900';
+                loginInput.placeholder = "Any ID (e.g. S101)";
+            } else if (role === 'parent') {
+                pBtn.className = 'flex-1 py-2 font-semibold bg-white rounded-md shadow-sm text-gray-900';
+                loginInput.placeholder = "Ward's ID (e.g. S101)";
+            } else {
+                wBtn.className = 'flex-1 py-2 font-semibold bg-white rounded-md shadow-sm text-gray-900';
+                loginInput.placeholder = "Warden ID (Any)";
+            }
+        }
+    </script>
+</body>
+</html>
