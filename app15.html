@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Hostel Management - Functional Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="font-sans text-gray-800 bg-gray-50 min-h-screen flex flex-col w-full overflow-x-hidden text-base md:text-lg">
+
+    <!-- Navbar -->
+    <nav class="bg-indigo-900 text-white shadow-lg sticky top-0 z-40 w-full">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-24">
+                <!-- Bigger, Smarter Logo -->
+                <div class="flex items-center gap-4 group cursor-pointer" onclick="location.reload()">
+                    <div class="bg-white/10 p-3 rounded-2xl group-hover:scale-105 transition-transform duration-300">
+                        <i class="fa-solid fa-building-user text-5xl text-indigo-300 drop-shadow-md"></i>
+                    </div>
+                    <span class="font-extrabold text-4xl tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-white to-indigo-200">SmartHostel</span>
+                </div>
+                <div id="nav-actions" class="flex space-x-4 items-center">
+                    <button onclick="openModal('student')" class="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-full font-bold transition shadow-md text-xl">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- LANDING PAGE (Hidden after login) -->
+    <div id="landing-page" class="flex-1 w-full flex flex-col justify-center">
+        <!-- Hero Section -->
+        <section class="w-full px-4 py-24 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 mb-8 tracking-tight">Hostel Management System</h1>
+            <p class="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">Fully functional mockup. Log in below to access the dynamic Student, Parent, and Warden dashboards with expanded designs.</p>
+            <div class="flex justify-center gap-6 flex-wrap">
+                <button onclick="openModal('student')" class="bg-indigo-600 text-white px-10 py-4 rounded-xl font-bold text-xl hover:bg-indigo-700 shadow-xl transition transform hover:-translate-y-1">Student Login</button>
+                <button onclick="openModal('parent')" class="bg-teal-600 text-white px-10 py-4 rounded-xl font-bold text-xl hover:bg-teal-700 shadow-xl transition transform hover:-translate-y-1">Parent Login</button>
+                <button onclick="openModal('warden')" class="bg-gray-200 text-indigo-900 px-10 py-4 rounded-xl font-bold text-xl hover:bg-gray-300 shadow-xl transition transform hover:-translate-y-1">Warden Login</button>
+            </div>
+        </section>
+
+        <!-- Notice Board Section -->
+        <section class="w-full max-w-7xl mx-auto px-4 pb-24">
+            <div class="bg-white rounded-2xl shadow-2xl border-t-8 border-indigo-600 overflow-hidden w-full">
+                <div class="bg-indigo-50 px-8 py-6 border-b border-indigo-100 flex items-center gap-4">
+                    <i class="fa-solid fa-bullhorn text-indigo-600 text-3xl"></i>
+                    <h2 class="text-3xl font-bold text-gray-900">Notice Board</h2>
+                </div>
+                <div class="p-8 w-full">
+                    <ul class="space-y-6">
+                        <li class="flex gap-6 items-start pb-6 border-b border-gray-100 last:border-0 last:pb-0">
+                            <div class="bg-indigo-100 text-indigo-700 font-extrabold px-4 py-2 rounded-lg text-lg whitespace-nowrap shadow-sm">Aug 19</div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 text-2xl">Hostel Fee Deadline Update</h4>
+                                <p class="text-gray-600 text-lg mt-2 leading-relaxed">The deadline for the upcoming semester's hostel accommodation fee has been extended. Please check your portals for the updated dates.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-6 items-start pb-6 border-b border-gray-100 last:border-0 last:pb-0">
+                            <div class="bg-red-100 text-red-700 font-extrabold px-4 py-2 rounded-lg text-lg whitespace-nowrap shadow-sm">Aug 18</div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 text-2xl">Scheduled Wi-Fi Maintenance</h4>
+                                <p class="text-gray-600 text-lg mt-2 leading-relaxed">Internet services will be temporarily unavailable in Block A and B between 2:00 AM and 4:00 AM this coming Sunday.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-6 items-start">
+                            <div class="bg-green-100 text-green-700 font-extrabold px-4 py-2 rounded-lg text-lg whitespace-nowrap shadow-sm">Aug 15</div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 text-2xl">Special Mess Menu</h4>
+                                <p class="text-gray-600 text-lg mt-2 leading-relaxed">A special festive menu will be served in the main mess hall tonight. Ensure you scan your daily mess tokens at the counter.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- DASHBOARD CONTAINER (Visible after login) -->
+    <div id="dashboard" class="w-full px-4 md:px-12 py-12 hidden flex-1 max-w-[1600px] mx-auto">
+        <!-- Dashboard content gets injected here via Javascript -->
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 backdrop-blur-md z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-10 relative">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 transition"><i class="fa-solid fa-xmark text-3xl"></i></button>
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-extrabold text-gray-900">Sign In</h2>
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="flex p-1.5 bg-gray-100 rounded-xl mb-8">
+                    <button type="button" id="role-student" onclick="setRole('student')" class="flex-1 py-3 text-lg font-bold bg-white rounded-lg shadow-sm text-gray-900">Student</button>
+                    <button type="button" id="role-parent" onclick="setRole('parent')" class="flex-1 py-3 text-lg font-bold text-gray-500">Parent</button>
+                    <button type="button" id="role-warden" onclick="setRole('warden')" class="flex-1 py-3 text-lg font-bold text-gray-500">Warden</button>
+                </div>
+                <input type="text" id="loginId" class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl mb-5 text-lg focus:border-indigo-500 focus:outline-none" placeholder="Any ID (e.g. S101)" required>
+                <input type="password" class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl mb-8 text-lg focus:border-indigo-500 focus:outline-none" placeholder="Any Password" required>
+                <button type="submit" class="w-full bg-indigo-600 text-white font-extrabold text-xl py-4 rounded-xl hover:bg-indigo-700 shadow-lg transition">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div id="profileModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 backdrop-blur-md z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl p-10 relative">
+            <button onclick="closeProfileModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 transition"><i class="fa-solid fa-xmark text-3xl"></i></button>
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-id-badge text-7xl text-indigo-500 mb-4 drop-shadow-sm"></i>
+                <h2 class="text-3xl font-extrabold text-gray-900">User Profile Details</h2>
+                <p class="text-lg font-bold text-indigo-600 uppercase tracking-widest mt-2" id="profRoleDisplay">Role</p>
+            </div>
+            <div id="profileContent" class="bg-gray-50 p-8 rounded-2xl border-2 border-gray-100 mt-6 shadow-inner text-lg space-y-4">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- APPLICATION LOGIC & UI GENERATION -->
+    <script>
+        // --- 1. BACKEND CONNECTION ---
+        // Spring Boot backend base URL. Update this if your backend is hosted elsewhere.
+        const API_BASE = 'http://localhost:8080/api';
+
+        async function apiRequest(method, path, body) {
+            const opts = { method };
+            if (body !== undefined) {
+                opts.headers = { 'Content-Type': 'application/json' };
+                opts.body = JSON.stringify(body);
+            }
+            let res;
+            try {
+                res = await fetch(API_BASE + path, opts);
+            } catch (networkErr) {
+                throw new Error(`Could not reach the backend at ${API_BASE}. Is it running and reachable? (${networkErr.message})`);
+            }
+            if (!res.ok) {
+                let detail = res.statusText;
+                try { const text = await res.text(); if (text) detail = text; } catch (e) { /* ignore */ }
+                throw new Error(`${method} ${path} -> ${res.status}: ${detail}`);
+            }
+            if (res.status === 204) return null;
+            const text = await res.text();
+            return text ? JSON.parse(text) : null;
+        }
+        const apiGet = (path) => apiRequest('GET', path);
+        const apiPost = (path, body) => apiRequest('POST', path, body);
+        const apiPut = (path, body) => apiRequest('PUT', path, body);
+        const apiPatch = (path, body) => apiRequest('PATCH', path, body);
+        const apiDelete = (path) => apiRequest('DELETE', path);
+
+        // --- 2. LIVE DATA CACHE (hydrated from the backend) ---
+        const db = {
+            currentUser: null,
+            currentRole: 'student',
+            students: [],
+            wardenProfile: { name: '', zone: '' },
+            gatePasses: [],
+            complaints: [],
+            fees: [],
+            alerts: [],
+            sickFoodRequests: [],
+            mealOptOuts: [],
+            foodFeedback: [],
+            laundry: [],
+            messMenu: { breakfast: '', lunch: '', dinner: '' },
+            cleaningRequests: [],
+            parentMessages: []
+        };
+
+        // Pulls the full current state from the backend into the local cache.
+        async function loadAllData() {
+            const [
+                students, wardenProfile, gatePasses, complaints, fees, alerts,
+                sickFoodRequests, mealOptOuts, foodFeedback, laundry, messMenu,
+                cleaningRequests, parentMessages
+            ] = await Promise.all([
+                apiGet('/students'),
+                apiGet('/warden-profile'),
+                apiGet('/gate-passes'),
+                apiGet('/complaints'),
+                apiGet('/fees'),
+                apiGet('/alerts'),
+                apiGet('/sick-food-requests'),
+                apiGet('/meal-opt-outs'),
+                apiGet('/food-feedback'),
+                apiGet('/laundry'),
+                apiGet('/mess-menu'),
+                apiGet('/cleaning-requests'),
+                apiGet('/parent-messages')
+            ]);
+            db.students = students || [];
+            db.wardenProfile = wardenProfile || { name: '', zone: '' };
+            db.gatePasses = gatePasses || [];
+            db.complaints = complaints || [];
+            db.fees = fees || [];
+            db.alerts = alerts || [];
+            db.sickFoodRequests = sickFoodRequests || [];
+            db.mealOptOuts = mealOptOuts || [];
+            db.foodFeedback = foodFeedback || [];
+            db.laundry = laundry || [];
+            db.messMenu = messMenu || { breakfast: '', lunch: '', dinner: '' };
+            db.cleaningRequests = cleaningRequests || [];
+            db.parentMessages = parentMessages || [];
+        }
+
+        // --- 3. CORE LOGICAL FUNCTIONS (now backed by REST calls) ---
+
+        async function markAttendance(studentId) {
+            try {
+                await apiPatch(`/students/${encodeURIComponent(studentId)}/attendance/toggle`);
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to update attendance.\n' + err.message); }
+        }
+
+        async function submitDailyAttendance(event) {
+            event.preventDefault();
+            const date = document.getElementById('uploadDate').value;
+            const checkboxes = document.querySelectorAll('.att-upload-checkbox');
+            try {
+                await Promise.all(Array.from(checkboxes).map(cb =>
+                    apiPatch(`/students/${encodeURIComponent(cb.value)}/attendance`, { present: cb.checked, date })
+                ));
+                alert('Daily attendance successfully uploaded for ' + date);
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to upload attendance.\n' + err.message); }
+        }
+
+        async function applyGatePass(event) {
+            event.preventDefault();
+            const reason = document.getElementById('gpReason').value;
+            const outDate = document.getElementById('gpOutDate').value;
+            const inDate = document.getElementById('gpInDate').value;
+            const parentMobile = document.getElementById('gpParentMobile').value;
+            const studentMobile = document.getElementById('gpStudentMobile').value;
+            const roomNo = document.getElementById('gpRoomNo').value;
+            const days = document.getElementById('gpDays').value;
+
+            try {
+                await apiPost('/gate-passes', {
+                    studentId: db.currentUser,
+                    reason,
+                    outDate,
+                    expectedReturn: inDate,
+                    parentMobile,
+                    studentMobile,
+                    roomNo,
+                    days: Number(days)
+                });
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to submit gate pass.\n' + err.message); }
+        }
+
+        async function approveGatePass(id, isApproved) {
+            try {
+                await apiPatch(`/gate-passes/${encodeURIComponent(id)}/approve`, { approved: isApproved });
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to update gate pass.\n' + err.message); }
+        }
+
+        async function markReturn(id) {
+            try {
+                await apiPatch(`/gate-passes/${encodeURIComponent(id)}/return`);
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to mark return.\n' + err.message); }
+        }
+
+        async function checkOverduePasses() {
+            try {
+                await apiPost('/gate-passes/check-overdue');
+            } catch (err) { console.error('checkOverduePasses failed:', err); }
+        }
+
+        async function refreshSystem() {
+            try {
+                await checkOverduePasses();
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Refresh failed.\n' + err.message); }
+        }
+
+        async function payFee(feeId) {
+            try {
+                await apiPatch(`/fees/${encodeURIComponent(feeId)}/pay`);
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to mark fee as paid.\n' + err.message); }
+        }
+
+        async function checkFeeDeadlines() {
+            if (!db.currentUser || db.currentRole === 'warden') return;
+            try {
+                await apiPost(`/fees/check-deadlines?studentId=${encodeURIComponent(db.currentUser)}`);
+            } catch (err) { console.error('checkFeeDeadlines failed:', err); }
+        }
+
+        async function submitComplaint(event) {
+            event.preventDefault();
+            try {
+                await apiPost('/complaints', {
+                    studentId: db.currentUser,
+                    category: document.getElementById('compCategory').value,
+                    desc: document.getElementById('compDesc').value
+                });
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to submit complaint.\n' + err.message); }
+        }
+
+        async function updateComplaint(id, newStatus) {
+            try {
+                await apiPatch(`/complaints/${encodeURIComponent(id)}/status`, { status: newStatus });
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to update complaint.\n' + err.message); }
+        }
+
+        async function scanMessToken() {
+            try {
+                await apiPatch(`/students/${encodeURIComponent(db.currentUser)}/mess-token/consume`);
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to scan mess token.\n' + err.message); }
+        }
+
+        async function triggerSOS() {
+            const me = db.students.find(s => s.id === db.currentUser);
+            const location = me ? me.room : 'Unknown';
+            try {
+                await apiPost(`/alerts/sos?studentId=${encodeURIComponent(db.currentUser)}`);
+                alert(`🚨 SOS ACTIVATED!\n\nLocation: Room ${location}\nNotifications instantly sent to Warden, Campus Security, and Health Center.`);
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to trigger SOS.\n' + err.message); }
+        }
+
+        async function requestSickFood(event) {
+            event.preventDefault();
+            const meal = document.getElementById('sickMeal').value;
+            try {
+                await apiPost('/sick-food-requests', {
+                    studentId: db.currentUser,
+                    date: new Date().toLocaleDateString(),
+                    meal
+                });
+                alert('Sick-leave food requested. The mess manager will deliver it to your room.');
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to request sick food.\n' + err.message); }
+        }
+
+        async function submitOptOut(event) {
+            event.preventDefault();
+            const meal = document.getElementById('optOutMeal').value;
+            try {
+                await apiPost('/meal-opt-outs', {
+                    studentId: db.currentUser,
+                    date: new Date().toLocaleDateString(),
+                    meal
+                });
+                alert(`You have successfully opted out of ${meal} today. Billing will be adjusted.`);
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to opt out.\n' + err.message); }
+        }
+
+        async function submitFeedback(event) {
+            event.preventDefault();
+            const meal = document.getElementById('fbMeal').value;
+            const rating = document.getElementById('fbRating').value;
+            try {
+                await apiPost('/food-feedback', {
+                    studentId: db.currentUser,
+                    date: new Date().toLocaleDateString(),
+                    meal,
+                    rating
+                });
+                alert('Thank you! Your feedback has been recorded for the mess management.');
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to submit feedback.\n' + err.message); }
+        }
+
+        async function submitCleaningRequest(event) {
+            event.preventDefault();
+            const date = document.getElementById('clnDate').value;
+            const timeSlot = document.getElementById('clnTime').value;
+            try {
+                await apiPost('/cleaning-requests', { studentId: db.currentUser, date, timeSlot });
+                alert('Cleaning request submitted successfully.');
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to submit cleaning request.\n' + err.message); }
+        }
+
+        async function updateCleaningStatus(id, newStatus) {
+            try {
+                await apiPatch(`/cleaning-requests/${encodeURIComponent(id)}/status`, { status: newStatus });
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to update cleaning status.\n' + err.message); }
+        }
+
+        async function sendWardenMessage(event) {
+            event.preventDefault();
+            const msg = document.getElementById('parentMsg').value;
+            try {
+                await apiPost('/parent-messages', {
+                    studentId: db.currentUser,
+                    message: msg,
+                    date: new Date().toLocaleDateString()
+                });
+                alert('Message sent to the Warden.');
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to send message.\n' + err.message); }
+        }
+
+        async function markMessageRead(id) {
+            try {
+                await apiPatch(`/parent-messages/${encodeURIComponent(id)}/read`);
+                await loadAllData();
+                refreshDashboard();
+            } catch (err) { alert('Failed to mark message read.\n' + err.message); }
+        }
+
+        // --- NEW SECTION TOGGLE LOGIC ---
+        function showSection(sectionId, tabGroupClass) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll(`.${tabGroupClass}`);
+            tabs.forEach(tab => tab.classList.add('hidden'));
+            
+            // Remove active styling from all buttons
+            const btns = document.querySelectorAll(`.${tabGroupClass}-btn`);
+            btns.forEach(btn => {
+                btn.classList.remove('bg-indigo-100', 'text-indigo-800', 'font-bold');
+                btn.classList.add('text-gray-600', 'hover:bg-gray-100');
+            });
+
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                // Trigger reflow animation for smoothness (optional)
+                targetSection.style.animation = 'none';
+                targetSection.offsetHeight; 
+                targetSection.style.animation = null;
+            }
+
+            // Apply active styling to clicked button
+            const activeBtn = document.getElementById(`btn-${sectionId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                activeBtn.classList.add('bg-indigo-100', 'text-indigo-800', 'font-bold');
+            }
+        }
+
+
+        // --- 3. UI RENDERING & DASHBOARDS ---
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const loginId = (document.getElementById('loginId').value || 'S101').toUpperCase();
+            const role = db.currentRole;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = 'Signing in...'; }
+
+            try {
+                // Auto-registers the student/parent on first login; warden logs in as-is.
+                const result = await apiPost('/auth/login', { loginId, role });
+                db.currentUser = result.currentUser;
+                db.currentRole = result.currentRole;
+
+                await loadAllData();
+
+                closeModal();
+                document.getElementById('landing-page').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+
+                // Replaced Logout button with Profile Dropdown + Logout
+                document.getElementById('nav-actions').innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <button onclick="openProfileModal(false)" title="View Profile" class="flex items-center gap-3 bg-indigo-800 hover:bg-indigo-700 px-6 py-3 rounded-full transition shadow-inner border border-indigo-600 group">
+                            <i class="fa-solid fa-circle-user text-3xl text-indigo-300 group-hover:text-white transition"></i>
+                            <span class="font-bold text-lg hidden sm:block">${db.currentUser}</span>
+                        </button>
+                        <button onclick="location.reload()" title="Logout" class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-full font-bold text-lg shadow-md transition text-white flex items-center gap-2">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="hidden md:inline">Logout</span>
+                        </button>
+                    </div>
+                `;
+
+                if (db.currentRole !== 'warden') {
+                    await checkOverduePasses();
+                    await checkFeeDeadlines();
+                    await loadAllData();
+                }
+                refreshDashboard();
+            } catch (err) {
+                alert('Login failed.\n' + err.message + `\n\nMake sure the backend is running and reachable at ${API_BASE}.`);
+            } finally {
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = 'Login'; }
+            }
+        }
+
+        function refreshDashboard() {
+            const container = document.getElementById('dashboard');
+            if(db.currentRole === 'student') {
+                container.innerHTML = renderStudentDashboard();
+                showSection('s-sos', 's-tab'); // Show first tab by default
+            } else if (db.currentRole === 'parent') {
+                container.innerHTML = renderParentDashboard();
+                showSection('p-presence', 'p-tab');
+            } else {
+                container.innerHTML = renderWardenDashboard();
+                showSection('w-medical', 'w-tab');
+            }
+        }
+
+        // --- STUDENT DASHBOARD VIEW ---
+        function renderStudentDashboard() {
+            const myPasses = db.gatePasses.filter(p => p.studentId === db.currentUser);
+            const myFees = db.fees; 
+            const myComplaints = db.complaints.filter(c => c.studentId === db.currentUser);
+            const mySickFood = db.sickFoodRequests.filter(sf => sf.studentId === db.currentUser);
+            const myLaundry = db.laundry.filter(l => l.studentId === db.currentUser);
+            const me = db.students.find(s => s.id === db.currentUser);
+            
+            const todayStr = new Date().toLocaleDateString();
+            if(me.messTokenDate !== todayStr) {
+                me.messTokenDate = todayStr;
+                me.messTokenConsumed = false;
+            }
+            const uniqueQrData = `${me.id}-${todayStr.replace(/\//g, '')}-${me.diet.toUpperCase()}`;
+
+            return `
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900">Student Portal - ${db.currentUser}</h2>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <button onclick="openProfileModal(true)" class="bg-indigo-100 text-indigo-800 hover:bg-indigo-200 px-6 py-3 rounded-xl font-bold shadow-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-user-pen"></i> Edit Profile
+                        </button>
+                        <span class="px-6 py-3 rounded-xl font-bold text-lg shadow-sm border ${me.present ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'}">
+                            Status: ${me.present ? 'Inside Campus' : 'Outside Campus'}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-10 items-start w-full">
+                    
+                    <!-- Side Navigation Menu -->
+                    <div class="w-full lg:w-80 bg-white rounded-2xl shadow-xl p-6 sticky top-32 shrink-0 border-t-8 border-gray-800">
+                        <h3 class="font-extrabold text-gray-900 mb-6 uppercase text-base tracking-widest flex items-center"><i class="fa-solid fa-bars mr-3 text-indigo-600"></i> Quick Menu</h3>
+                        <nav class="flex flex-col space-y-2">
+                            <button id="btn-s-sos" onclick="showSection('s-sos', 's-tab')" class="s-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Emergency & Medical</button>
+                            <button id="btn-s-gatepass" onclick="showSection('s-gatepass', 's-tab')" class="s-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Gate Pass</button>
+                            <button id="btn-s-messtoken" onclick="showSection('s-messtoken', 's-tab')" class="s-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Daily Mess Token</button>
+                            <button id="btn-s-messmenu" onclick="showSection('s-messmenu', 's-tab')" class="s-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Menu & Feedback</button>
+                            <button id="btn-s-fees" onclick="showSection('s-fees', 's-tab')" class="s-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Fees & Deadlines</button>
+                            <button id="btn-s-complaints" onclick="showSection('s-complaints', 's-tab')" class="s-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Lodge Complaint</button>
+                            <button id="btn-s-laundry" onclick="showSection('s-laundry', 's-tab')" class="s-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Laundry Progress</button>
+                            <button id="btn-s-cleaning" onclick="showSection('s-cleaning', 's-tab')" class="s-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Room Cleaning</button>
+                        </nav>
+                    </div>
+
+                    <!-- Main Content Sections -->
+                    <div class="flex-1 w-full overflow-hidden">
+                        
+                        <div id="s-sos" class="s-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-red-600">
+                            <h3 class="text-3xl font-extrabold mb-8 text-red-700 flex items-center"><i class="fa-solid fa-truck-medical mr-4 text-4xl"></i>Emergency SOS & Medical</h3>
+                            <div class="grid lg:grid-cols-2 gap-10 items-center">
+                                <div class="text-center p-6 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                                    <button onclick="triggerSOS()" class="bg-red-600 hover:bg-red-700 text-white font-extrabold py-8 px-12 rounded-full shadow-2xl text-2xl transition transform hover:scale-105 animate-pulse w-full">
+                                        <i class="fa-solid fa-bell mr-3"></i> TAP FOR SOS
+                                    </button>
+                                    <p class="text-base text-gray-600 mt-6 font-semibold">Triggers instant location alert to Warden, Campus Security & Health Center.</p>
+                                </div>
+                                
+                                <div class="bg-red-50 p-8 rounded-2xl border-2 border-red-100 shadow-sm">
+                                    <h4 class="font-extrabold text-gray-900 text-xl mb-4">Sick-Leave Food Request</h4>
+                                    <form onsubmit="requestSickFood(event)" class="flex flex-col gap-4">
+                                        <select id="sickMeal" class="border-2 border-gray-300 p-4 rounded-xl text-lg w-full bg-white" required>
+                                            <option value="">Select Meal...</option>
+                                            <option value="Breakfast">Breakfast</option>
+                                            <option value="Lunch">Lunch</option>
+                                            <option value="Dinner">Dinner</option>
+                                        </select>
+                                        <button class="bg-gray-900 hover:bg-gray-800 text-white px-6 py-4 rounded-xl text-lg font-bold transition shadow-md w-full">Request Room Delivery</button>
+                                    </form>
+                                    ${mySickFood.length > 0 ? `
+                                        <div class="mt-6 text-base bg-white p-4 rounded-xl border border-red-200 shadow-sm">
+                                            <span class="font-bold text-gray-700 block mb-2">Today's Requests: </span>
+                                            <div class="flex flex-wrap gap-2">
+                                                ${mySickFood.map(sf => `<span class="bg-red-100 text-red-800 border border-red-200 px-3 py-1.5 rounded-lg font-semibold">${sf.meal} (${sf.status})</span>`).join('')}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="s-gatepass" class="s-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-indigo-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Apply Gate Pass</h3>
+                            <form onsubmit="applyGatePass(event)" class="space-y-6">
+                                <div>
+                                    <label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Reason for leave</label>
+                                    <input type="text" id="gpReason" placeholder="e.g. Medical, Going Home" required class="w-full border-2 border-gray-200 p-4 rounded-xl text-lg focus:border-indigo-500 outline-none">
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div><label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Out Date & Time</label><input type="datetime-local" id="gpOutDate" required class="w-full border-2 border-gray-200 p-4 rounded-xl text-lg focus:border-indigo-500 outline-none bg-white"></div>
+                                    <div><label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">In Date & Time</label><input type="datetime-local" id="gpInDate" required class="w-full border-2 border-gray-200 p-4 rounded-xl text-lg focus:border-indigo-500 outline-none bg-white"></div>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div><label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Parent Mobile No.</label><input type="tel" id="gpParentMobile" placeholder="e.g. 9876543210" required class="w-full border-2 border-gray-200 p-4 rounded-xl text-lg focus:border-indigo-500 outline-none"></div>
+                                    <div><label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Student Mobile No.</label><input type="tel" id="gpStudentMobile" placeholder="e.g. 9123456780" required class="w-full border-2 border-gray-200 p-4 rounded-xl text-lg focus:border-indigo-500 outline-none"></div>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div><label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Room Number</label><input type="text" id="gpRoomNo" value="${me.room}" required class="w-full border-2 border-gray-200 p-4 rounded-xl text-lg focus:border-indigo-500 outline-none bg-gray-50"></div>
+                                    <div><label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Proposed Days</label><input type="number" id="gpDays" placeholder="No. of days" required min="1" class="w-full border-2 border-gray-200 p-4 rounded-xl text-lg focus:border-indigo-500 outline-none"></div>
+                                </div>
+                                <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-extrabold text-xl mt-4 shadow-lg transition">Submit Application</button>
+                            </form>
+                            <div class="mt-10 border-t-2 border-gray-100 pt-8">
+                                <h4 class="font-extrabold text-xl text-gray-800 mb-4">My Gate Passes</h4>
+                                <div class="space-y-4">
+                                    ${myPasses.length > 0 ? myPasses.map(p => `
+                                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center p-5 bg-gray-50 rounded-xl border-2 border-gray-100 shadow-sm">
+                                            <div class="mb-2 md:mb-0">
+                                                <span class="font-bold text-gray-900 text-lg block">${p.reason} <span class="text-gray-500 font-normal">(${p.days} Days)</span></span>
+                                                <span class="text-sm text-gray-600 font-semibold mt-1 block">Out: ${p.outDate ? new Date(p.outDate).toLocaleString() : 'N/A'}</span>
+                                            </div>
+                                            <span class="px-4 py-2 rounded-lg font-bold text-sm ${p.status === 'Approved' ? 'bg-green-100 text-green-700' : p.status === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}">${p.status}</span>
+                                        </div>
+                                    `).join('') : '<p class="text-gray-500 italic">No pass history found.</p>'}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="s-messtoken" class="s-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-emerald-500 flex flex-col justify-between min-h-[600px]">
+                            <div>
+                                <h3 class="text-3xl font-extrabold mb-2 text-gray-900">Daily Mess Token</h3>
+                                <p class="text-lg text-gray-500 font-semibold mb-8">Valid only for <span class="text-gray-800">${todayStr}</span></p>
+                            </div>
+                            <div class="text-center flex-1 flex flex-col items-center justify-center py-10 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                                <p class="font-bold text-2xl mb-8 text-gray-800 flex items-center gap-4">
+                                    Diet Preference: 
+                                    <span class="${me.diet === 'Veg' ? 'text-green-700 bg-green-100 border-green-300' : 'text-red-700 bg-red-100 border-red-300'} px-5 py-2 border-2 rounded-full text-lg uppercase tracking-widest shadow-sm">${me.diet}</span>
+                                </p>
+                                
+                                ${me.messTokenConsumed ? `
+                                    <div class="bg-white w-full max-w-md p-10 rounded-3xl border-4 border-gray-100 flex flex-col items-center justify-center shadow-lg">
+                                        <i class="fa-solid fa-circle-check text-7xl text-gray-300 mb-6"></i>
+                                        <p class="font-extrabold text-gray-800 text-3xl mb-2">Token Consumed</p>
+                                        <p class="text-base text-gray-500 font-semibold">Cannot be scanned again today</p>
+                                    </div>
+                                ` : `
+                                    <div class="bg-emerald-50 w-full max-w-md p-10 rounded-3xl border-4 border-emerald-200 flex flex-col items-center justify-center shadow-lg relative">
+                                        <div class="bg-white p-4 rounded-2xl shadow-md mb-6 inline-block">
+                                            <i class="fa-solid fa-qrcode text-9xl text-gray-900"></i>
+                                        </div>
+                                        <p class="text-sm font-mono font-bold text-gray-600 break-all mb-8 bg-white px-4 py-2 rounded-lg border shadow-inner">ID: ${uniqueQrData}</p>
+                                        <button onclick="scanMessToken()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-5 rounded-xl font-extrabold text-xl shadow-xl transition-all transform hover:-translate-y-1">
+                                            <i class="fa-solid fa-camera mr-3"></i> Simulate Mess Scan
+                                        </button>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+
+                        <div id="s-messmenu" class="s-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-orange-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Live Mess Menu & Feedback</h3>
+                            <div class="grid lg:grid-cols-2 gap-10">
+                                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
+                                    <h4 class="font-extrabold text-gray-900 text-2xl mb-6 flex items-center"><i class="fa-solid fa-utensils mr-3 text-orange-500"></i> Today's Menu</h4>
+                                    <div class="space-y-4 text-lg">
+                                        <div class="p-4 border-2 border-white rounded-xl bg-gray-100 shadow-inner"><b class="text-gray-800">Breakfast:</b> <span class="text-gray-700">${db.messMenu.breakfast}</span></div>
+                                        <div class="p-4 border-2 border-white rounded-xl bg-gray-100 shadow-inner"><b class="text-gray-800">Lunch:</b> <span class="text-gray-700">${db.messMenu.lunch}</span></div>
+                                        <div class="p-4 border-2 border-white rounded-xl bg-gray-100 shadow-inner"><b class="text-gray-800">Dinner:</b> <span class="text-gray-700">${db.messMenu.dinner}</span></div>
+                                    </div>
+
+                                    <h4 class="font-extrabold text-gray-900 text-xl mt-8 mb-4 border-t pt-6">Meal Opt-Out (Save Food Waste)</h4>
+                                    <form onsubmit="submitOptOut(event)" class="flex flex-col sm:flex-row gap-4">
+                                        <select id="optOutMeal" class="border-2 border-gray-300 p-4 rounded-xl flex-1 text-lg bg-white" required>
+                                            <option value="">Select Meal to Skip...</option>
+                                            <option value="Breakfast">Breakfast</option>
+                                            <option value="Lunch">Lunch</option>
+                                            <option value="Dinner">Dinner</option>
+                                        </select>
+                                        <button class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-xl text-lg font-bold shadow-md transition">Skip Meal</button>
+                                    </form>
+                                </div>
+                                
+                                <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100 shadow-sm flex flex-col justify-center">
+                                    <h4 class="font-extrabold text-gray-900 text-2xl mb-6 text-center">Rate Today's Food</h4>
+                                    <form onsubmit="submitFeedback(event)" class="space-y-5 bg-white p-6 rounded-xl shadow-inner border border-orange-100">
+                                        <select id="fbMeal" class="w-full border-2 border-gray-200 p-4 rounded-xl text-lg bg-gray-50" required>
+                                            <option value="">Select Meal...</option>
+                                            <option value="Breakfast">Breakfast</option>
+                                            <option value="Lunch">Lunch</option>
+                                            <option value="Dinner">Dinner</option>
+                                        </select>
+                                        <select id="fbRating" class="w-full border-2 border-gray-200 p-4 rounded-xl text-lg bg-gray-50" required>
+                                            <option value="">Rate Quality...</option>
+                                            <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
+                                            <option value="4">⭐⭐⭐⭐ - Good</option>
+                                            <option value="3">⭐⭐⭐ - Average</option>
+                                            <option value="2">⭐⭐ - Poor</option>
+                                            <option value="1">⭐ - Terrible</option>
+                                        </select>
+                                        <button class="w-full bg-gray-900 hover:bg-gray-800 text-white py-4 rounded-xl text-lg font-bold shadow-md transition mt-2">Submit Rating</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="s-fees" class="s-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-yellow-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Fees & Deadlines</h3>
+                            <div class="space-y-4">
+                                ${myFees.map(f => `
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-2 rounded-xl shadow-sm ${f.paid ? 'bg-gray-50 border-gray-200' : 'bg-red-50 border-red-200'}">
+                                        <div class="mb-4 sm:mb-0">
+                                            <p class="font-extrabold text-2xl text-gray-900">${f.type}</p>
+                                            <p class="text-base text-gray-600 font-semibold mt-1">Due Date: ${f.deadline}</p>
+                                        </div>
+                                        <div class="text-left sm:text-right flex flex-col items-start sm:items-end w-full sm:w-auto">
+                                            <p class="font-black text-3xl text-gray-900 mb-2">₹${f.amount}</p>
+                                            ${f.paid ? '<span class="text-green-700 bg-green-100 border border-green-300 px-4 py-1.5 rounded-lg text-sm font-bold uppercase tracking-wider">Paid Successfully</span>' : `<button onclick="payFee('${f.id}')" class="bg-yellow-500 text-white px-8 py-3 rounded-xl text-lg font-bold hover:bg-yellow-600 shadow-md transition w-full sm:w-auto">Pay Now</button>`}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="s-complaints" class="s-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-purple-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Lodge Complaint</h3>
+                            <form onsubmit="submitComplaint(event)" class="bg-gray-50 p-6 rounded-2xl border-2 border-gray-100 flex flex-col gap-6 shadow-sm mb-10">
+                                <div>
+                                    <label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Issue Category</label>
+                                    <select id="compCategory" class="border-2 border-gray-300 p-4 rounded-xl text-lg w-full bg-white">
+                                        <option>Electrical</option><option>Plumbing</option><option>Internet</option><option>Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Description</label>
+                                    <input type="text" id="compDesc" placeholder="Describe the issue in detail..." required class="border-2 border-gray-300 p-4 rounded-xl text-lg w-full bg-white">
+                                </div>
+                                <button class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl font-extrabold text-xl shadow-lg transition">Submit Report</button>
+                            </form>
+                            
+                            <h4 class="font-extrabold text-xl text-gray-800 mb-4 border-t pt-8">My Active Complaints</h4>
+                            <div class="space-y-4">
+                                ${myComplaints.length === 0 ? '<p class="text-gray-500 italic">No complaints logged.</p>' : ''}
+                                ${myComplaints.map(c => `
+                                    <div class="bg-white p-5 rounded-xl border-2 border-gray-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                        <div>
+                                            <span class="font-extrabold text-gray-900 text-lg block mb-1">${c.category}</span>
+                                            <span class="text-gray-600 text-base">${c.desc}</span>
+                                        </div>
+                                        <span class="font-bold text-sm uppercase tracking-wider px-4 py-2 rounded-lg ${c.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : c.status === 'Resolved' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">${c.status}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div id="s-laundry" class="s-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-cyan-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Live Laundry Progress</h3>
+                            <div class="space-y-6">
+                                ${myLaundry.length > 0 ? myLaundry.map(l => `
+                                    <div class="bg-cyan-50 p-8 rounded-2xl border-2 border-cyan-200 shadow-sm">
+                                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+                                            <div class="flex items-center gap-6">
+                                                <div class="bg-cyan-100 p-4 rounded-full border border-cyan-300 shadow-inner">
+                                                    <i class="fa-solid fa-shirt text-cyan-600 text-5xl"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="font-extrabold text-2xl text-gray-900 mb-1">Machine: ${l.machineNo}</p>
+                                                    <p class="text-lg text-gray-600 font-semibold">Status: <span class="text-cyan-700 font-bold">${l.status}</span></p>
+                                                </div>
+                                            </div>
+                                            <div class="text-left sm:text-right bg-white p-4 border border-cyan-100 rounded-xl shadow-sm w-full sm:w-auto">
+                                                <p class="text-sm text-gray-500 uppercase tracking-widest font-bold mb-1">Est. Completion</p>
+                                                <p class="font-black text-3xl text-gray-900">${l.estCompletion}</p>
+                                            </div>
+                                        </div>
+                                        <!-- Progress Bar -->
+                                        <div class="w-full bg-cyan-200 rounded-full h-4 shadow-inner">
+                                            <div class="bg-cyan-600 h-4 rounded-full relative shadow-md" style="width: ${l.progress}%">
+                                                <div class="absolute -right-3 -top-1.5 w-7 h-7 bg-white border-4 border-cyan-600 rounded-full shadow-lg"></div>
+                                            </div>
+                                        </div>
+                                        <p class="text-right mt-3 text-sm font-bold text-cyan-700">${l.progress}% Complete</p>
+                                    </div>
+                                `).join('') : '<p class="text-gray-500 text-lg italic p-6 bg-gray-50 rounded-xl border border-gray-200 text-center">No active laundry cycles found.</p>'}
+                            </div>
+                        </div>
+
+                        <!-- Room Cleaning Request -->
+                        <div id="s-cleaning" class="s-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-pink-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Request Room Cleaning</h3>
+                            <div class="grid lg:grid-cols-2 gap-10">
+                                <form onsubmit="submitCleaningRequest(event)" class="bg-pink-50 p-6 rounded-2xl border-2 border-pink-100 shadow-sm flex flex-col gap-6">
+                                    <div>
+                                        <label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Preferred Date</label>
+                                        <input type="date" id="clnDate" required class="w-full border-2 border-gray-300 p-4 rounded-xl text-lg bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="text-sm text-gray-600 font-bold uppercase tracking-wider mb-2 block">Time Slot</label>
+                                        <select id="clnTime" required class="w-full border-2 border-gray-300 p-4 rounded-xl text-lg bg-white">
+                                            <option value="">Select Time...</option>
+                                            <option>Morning (10 AM - 12 PM)</option>
+                                            <option>Afternoon (2 PM - 4 PM)</option>
+                                        </select>
+                                    </div>
+                                    <button class="w-full bg-pink-600 hover:bg-pink-700 text-white py-4 rounded-xl font-extrabold text-xl shadow-lg transition mt-2">Book Cleaning</button>
+                                </form>
+                                <div class="lg:pl-8 lg:border-l-2 lg:border-gray-100 space-y-4 max-h-[500px] overflow-y-auto">
+                                    <h4 class="font-extrabold text-2xl text-gray-900 sticky top-0 bg-white pb-4 border-b-2 border-gray-100 mb-4 z-10">My Requests</h4>
+                                    ${db.cleaningRequests.filter(c => c.studentId === db.currentUser).length === 0 ? '<p class="text-gray-500 italic">No cleaning requests found.</p>' : ''}
+                                    ${db.cleaningRequests.filter(c => c.studentId === db.currentUser).map(c => `
+                                        <div class="bg-white p-4 rounded-xl border-2 border-gray-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                                            <div><span class="font-bold text-gray-900 text-lg block">${c.date}</span> <span class="text-gray-600 text-base font-semibold">${c.timeSlot}</span></div>
+                                            <span class="font-bold text-sm uppercase tracking-wider px-3 py-1.5 rounded-lg shadow-sm ${c.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">${c.status}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- PARENT DASHBOARD VIEW ---
+        function renderParentDashboard() {
+            const wardId = db.currentUser;
+            const me = db.students.find(s => s.id === wardId);
+            const wardPasses = db.gatePasses.filter(p => p.studentId === wardId);
+            const wardAlerts = db.alerts.filter(a => a.studentId === wardId);
+            const myFees = db.fees; 
+
+            return `
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+                    <div>
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900">Parent Dashboard</h2>
+                        <p class="text-xl text-gray-500 mt-2 font-semibold">Monitoring activity for Ward: <span class="font-bold text-indigo-700">${wardId} (${me.name})</span></p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <button onclick="openProfileModal(true)" class="bg-indigo-100 text-indigo-800 hover:bg-indigo-200 px-6 py-3 rounded-xl font-bold shadow-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-user-pen"></i> Edit Profile
+                        </button>
+                        <span class="px-6 py-3 rounded-xl font-bold text-lg shadow-sm border ${me.present ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'}">
+                            Ward Status: ${me.present ? 'Inside Campus' : 'Outside Campus'}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-10 items-start w-full">
+                    
+                    <!-- Side Navigation Menu -->
+                    <div class="w-full lg:w-80 bg-white rounded-2xl shadow-xl p-6 sticky top-32 shrink-0 border-t-8 border-gray-800">
+                        <h3 class="font-extrabold text-gray-900 mb-6 uppercase text-base tracking-widest flex items-center"><i class="fa-solid fa-bars mr-3 text-indigo-600"></i> Quick Menu</h3>
+                        <nav class="flex flex-col space-y-2">
+                            <button id="btn-p-presence" onclick="showSection('p-presence', 'p-tab')" class="p-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Presence Status</button>
+                            <button id="btn-p-alerts" onclick="showSection('p-alerts', 'p-tab')" class="p-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Alerts & Notifications</button>
+                            <button id="btn-p-gatepass" onclick="showSection('p-gatepass', 'p-tab')" class="p-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Gate Pass History</button>
+                            <button id="btn-p-fees" onclick="showSection('p-fees', 'p-tab')" class="p-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Fee Details</button>
+                            <button id="btn-p-contact" onclick="showSection('p-contact', 'p-tab')" class="p-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Contact Warden</button>
+                        </nav>
+                    </div>
+
+                    <!-- Main Content Sections -->
+                    <div class="flex-1 w-full">
+                        <div id="p-presence" class="p-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-green-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Live Hostel Presence Status</h3>
+                            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-8 mt-6 bg-gray-50 p-8 rounded-2xl border-2 border-gray-100">
+                                <div class="w-24 h-24 rounded-full flex items-center justify-center shadow-inner border-4 ${me.present ? 'bg-green-100 border-green-200' : 'bg-red-100 border-red-200'}">
+                                    <i class="fa-solid ${me.present ? 'fa-building-circle-check text-green-600' : 'fa-person-walking-arrow-right text-red-600'} text-5xl"></i>
+                                </div>
+                                <div class="text-center sm:text-left">
+                                    <p class="text-4xl font-extrabold mb-2 ${me.present ? 'text-green-700' : 'text-red-700'}">${me.present ? 'Inside Hostel' : 'Currently Out'}</p>
+                                    <p class="text-gray-600 text-lg font-semibold">Last System Update: <span class="text-gray-900 font-bold">${me.lastScan}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="p-alerts" class="p-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-red-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-red-700 flex items-center"><i class="fa-solid fa-bell mr-3"></i> Alerts & Notifications</h3>
+                            ${wardAlerts.length === 0 ? '<p class="text-gray-500 text-lg italic bg-gray-50 p-6 rounded-xl border border-gray-200 text-center">No recent alerts for your ward.</p>' : ''}
+                            <div class="space-y-4">
+                                ${wardAlerts.map(a => `
+                                    <div class="bg-red-50 p-6 rounded-xl border-2 border-red-200 shadow-sm">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-extrabold text-red-900 text-xl">${a.type}</span>
+                                            <span class="text-sm text-red-600 font-bold bg-white px-3 py-1 rounded-lg border border-red-100">${a.time}</span>
+                                        </div>
+                                        <p class="text-lg text-red-800 mt-2 font-semibold">${a.message}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="p-gatepass" class="p-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-blue-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Gate Pass History</h3>
+                            ${wardPasses.length === 0 ? '<p class="text-gray-500 text-lg italic p-6 bg-gray-50 border rounded-xl text-center">No gate pass records found.</p>' : ''}
+                            <div class="space-y-6">
+                                ${wardPasses.map(p => `
+                                    <div class="p-6 border-2 rounded-2xl text-lg shadow-sm ${p.status === 'Approved' && !p.returned ? 'bg-orange-50 border-orange-200' : 'bg-white border-gray-200'}">
+                                        <div class="flex flex-col sm:flex-row justify-between mb-4 border-b pb-4 border-gray-100">
+                                            <span class="font-extrabold text-gray-900 text-2xl">${p.reason} <span class="font-semibold text-gray-500 text-lg">(${p.days} Days)</span></span>
+                                            <span class="font-black mt-2 sm:mt-0 uppercase tracking-widest text-sm px-4 py-2 rounded-lg ${p.status === 'Approved' ? 'bg-green-100 text-green-800' : p.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}">${p.status}</span>
+                                        </div>
+                                        <div class="grid sm:grid-cols-2 gap-4 text-gray-700 mb-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                            <div><b class="text-gray-900 block mb-1">Out Date & Time:</b> ${p.outDate ? new Date(p.outDate).toLocaleString() : 'N/A'}</div>
+                                            <div><b class="text-gray-900 block mb-1">Expected Return:</b> ${new Date(p.expectedReturn).toLocaleString()}</div>
+                                        </div>
+                                        <p class="mt-2 font-extrabold text-xl ${p.returned ? 'text-green-700' : (p.status === 'Approved' ? 'text-orange-700' : 'text-gray-600')}">
+                                            <i class="fa-solid ${p.returned ? 'fa-check' : 'fa-clock'} mr-2"></i>
+                                            Status: ${p.returned ? 'Safely Returned to Campus' : (p.status === 'Approved' ? 'Currently Out of Campus' : 'Request Closed')}
+                                        </p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="p-fees" class="p-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-yellow-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Fee Details</h3>
+                            <div class="grid lg:grid-cols-2 gap-6">
+                                ${myFees.map(f => `
+                                    <div class="flex flex-col justify-between p-6 border-2 rounded-2xl shadow-sm ${f.paid ? 'bg-gray-50 border-gray-200' : 'bg-red-50 border-red-200'}">
+                                        <div class="mb-6">
+                                            <p class="font-extrabold text-2xl text-gray-900 mb-1">${f.type}</p>
+                                            <p class="text-base text-gray-600 font-bold uppercase tracking-wider">Due: ${f.deadline}</p>
+                                        </div>
+                                        <div class="flex justify-between items-center border-t border-gray-200 pt-4 mt-auto">
+                                            <p class="font-black text-3xl text-gray-900">₹${f.amount}</p>
+                                            <span class="px-4 py-2 rounded-lg font-bold text-sm uppercase tracking-wider ${f.paid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${f.paid ? 'Paid' : 'Unpaid'}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Contact Warden -->
+                        <div id="p-contact" class="p-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-indigo-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Message Warden</h3>
+                            <div class="grid xl:grid-cols-2 gap-10">
+                                <form onsubmit="sendWardenMessage(event)" class="bg-indigo-50 p-6 rounded-2xl border-2 border-indigo-100 shadow-sm flex flex-col h-full">
+                                    <label class="text-sm text-indigo-900 font-bold uppercase tracking-wider mb-3 block">Your Message</label>
+                                    <textarea id="parentMsg" placeholder="Type your message regarding your ward here..." required class="w-full border-2 border-indigo-200 p-4 rounded-xl text-lg flex-1 mb-6 focus:border-indigo-500 outline-none" rows="5"></textarea>
+                                    <button class="w-full bg-indigo-600 text-white py-4 rounded-xl font-extrabold text-xl hover:bg-indigo-700 shadow-lg transition mt-auto">Send Message</button>
+                                </form>
+                                <div class="xl:pl-8 xl:border-l-2 border-gray-100 flex flex-col max-h-[600px]">
+                                    <h4 class="font-extrabold text-2xl text-gray-900 mb-4 bg-white pb-2 border-b-2 border-gray-100">Message History</h4>
+                                    <div class="space-y-4 overflow-y-auto flex-1 pr-2">
+                                        ${db.parentMessages.filter(m => m.studentId === db.currentUser).length === 0 ? '<p class="text-gray-500 italic mt-4">No message history.</p>' : ''}
+                                        ${db.parentMessages.filter(m => m.studentId === db.currentUser).map(m => `
+                                            <div class="bg-white p-5 rounded-xl border-2 shadow-sm ${m.status === 'Read' ? 'border-gray-200' : 'border-indigo-200 bg-indigo-50/30'}">
+                                                <div class="flex justify-between items-center mb-3">
+                                                    <span class="font-bold text-gray-900 text-sm bg-gray-100 px-3 py-1 rounded-md border">${m.date}</span>
+                                                    <span class="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md ${m.status==='Read'?'bg-green-100 text-green-800':'bg-yellow-100 text-yellow-800'}">${m.status}</span>
+                                                </div>
+                                                <p class="text-gray-700 text-lg font-medium">"${m.message}"</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- WARDEN DASHBOARD VIEW ---
+        function renderWardenDashboard() {
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            return `
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900">Warden Control Panel</h2>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <button onclick="refreshSystem()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold text-lg shadow-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-rotate"></i> Refresh System
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-10 items-start w-full">
+                    
+                    <!-- Side Navigation Menu -->
+                    <div class="w-full lg:w-80 bg-white rounded-2xl shadow-xl p-6 sticky top-32 shrink-0 border-t-8 border-gray-800">
+                        <h3 class="font-extrabold text-gray-900 mb-6 uppercase text-base tracking-widest flex items-center"><i class="fa-solid fa-bars mr-3 text-indigo-600"></i> Quick Menu</h3>
+                        <nav class="flex flex-col space-y-2">
+                            <button id="btn-w-medical" onclick="showSection('w-medical', 'w-tab')" class="w-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Medical & SOS Logs</button>
+                            <button id="btn-w-upload" onclick="showSection('w-upload', 'w-tab')" class="w-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Attendance Upload</button>
+                            <button id="btn-w-gatepass" onclick="showSection('w-gatepass', 'w-tab')" class="w-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Gate Pass Requests</button>
+                            <button id="btn-w-messops" onclick="showSection('w-messops', 'w-tab')" class="w-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Mess Operations</button>
+                            <button id="btn-w-alerts" onclick="showSection('w-alerts', 'w-tab')" class="w-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">System Alerts</button>
+                            <button id="btn-w-monitor" onclick="showSection('w-monitor', 'w-tab')" class="w-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Attendance Monitor</button>
+                            <button id="btn-w-complaints" onclick="showSection('w-complaints', 'w-tab')" class="w-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Manage Complaints</button>
+                            <button id="btn-w-cleaning" onclick="showSection('w-cleaning', 'w-tab')" class="w-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Cleaning Requests</button>
+                            <button id="btn-w-messages" onclick="showSection('w-messages', 'w-tab')" class="w-tab-btn w-full text-left px-5 py-4 rounded-xl text-lg font-semibold transition">Parent Messages</button>
+                        </nav>
+                    </div>
+
+                    <!-- Main Content Sections -->
+                    <div class="flex-1 w-full overflow-hidden">
+
+                        <div id="w-medical" class="w-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-red-600">
+                            <h3 class="text-3xl font-extrabold mb-8 text-red-700 flex items-center"><i class="fa-solid fa-notes-medical mr-4 text-4xl"></i>Medical & Sick Food Logs</h3>
+                            <div class="overflow-x-auto w-full bg-white border-2 border-gray-200 rounded-xl">
+                                <table class="w-full text-left border-collapse text-lg">
+                                    <thead class="bg-red-50 text-red-900 border-b-2 border-red-200">
+                                        <tr>
+                                            <th class="p-4 font-extrabold">ID</th>
+                                            <th class="p-4 font-extrabold">Student</th>
+                                            <th class="p-4 font-extrabold">Date</th>
+                                            <th class="p-4 font-extrabold">Meal Requested</th>
+                                            <th class="p-4 font-extrabold">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        ${db.sickFoodRequests.length === 0 ? '<tr><td colspan="5" class="p-6 text-center text-gray-500 italic">No requests today.</td></tr>' : ''}
+                                        ${db.sickFoodRequests.map(sf => `
+                                            <tr class="hover:bg-red-50/50 transition">
+                                                <td class="p-4 font-bold text-gray-600">${sf.id}</td>
+                                                <td class="p-4 font-extrabold text-gray-900">${sf.studentId}</td>
+                                                <td class="p-4 text-gray-700 font-semibold">${sf.date}</td>
+                                                <td class="p-4 text-gray-700 font-semibold">${sf.meal}</td>
+                                                <td class="p-4"><span class="bg-yellow-100 text-yellow-800 border border-yellow-200 px-3 py-1.5 rounded-lg text-sm font-bold uppercase tracking-wider">${sf.status}</span></td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="w-upload" class="w-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-teal-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Daily Attendance Upload</h3>
+                            <form onsubmit="submitDailyAttendance(event)" class="bg-gray-50 p-8 border-2 border-gray-200 rounded-2xl shadow-sm">
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-6 mb-8 bg-white p-6 rounded-xl border border-gray-200">
+                                    <label class="font-extrabold text-gray-900 text-xl">Select Date for Upload:</label>
+                                    <input type="date" id="uploadDate" required value="${todayStr}" class="border-2 border-gray-300 p-3 rounded-xl text-lg focus:border-teal-500 outline-none flex-1 max-w-xs">
+                                </div>
+                                <div class="max-h-96 overflow-y-auto mb-8 border-2 border-gray-200 bg-white rounded-xl shadow-inner">
+                                    <table class="w-full text-left border-collapse text-lg">
+                                        <thead class="bg-gray-100 sticky top-0 shadow-sm z-10 text-gray-800">
+                                            <tr>
+                                                <th class="p-4 border-b-2 w-24 text-center font-extrabold">Present</th>
+                                                <th class="p-4 border-b-2 font-extrabold">Student ID</th>
+                                                <th class="p-4 border-b-2 font-extrabold">Full Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100">
+                                            ${db.students.map(s => `
+                                                <tr class="hover:bg-teal-50 transition cursor-pointer">
+                                                    <td class="p-4 text-center">
+                                                        <input type="checkbox" value="${s.id}" class="att-upload-checkbox w-6 h-6 text-teal-600 rounded cursor-pointer" ${s.present ? 'checked' : ''}>
+                                                    </td>
+                                                    <td class="p-4 font-extrabold text-gray-900">${s.id}</td>
+                                                    <td class="p-4 text-gray-700 font-semibold">${s.name}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button type="submit" class="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white px-10 py-4 rounded-xl font-extrabold text-xl shadow-lg transition">Submit Daily Attendance Batch</button>
+                            </form>
+                        </div>
+                        
+                        <div id="w-gatepass" class="w-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-blue-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Gate Pass Requests & Active Passes</h3>
+                            <div class="grid lg:grid-cols-2 gap-10">
+                                <div>
+                                    <h4 class="font-extrabold text-xl text-gray-900 mb-6 uppercase tracking-widest border-b-2 border-gray-100 pb-3">Pending Requests</h4>
+                                    ${db.gatePasses.filter(p => p.status === 'Pending').length === 0 ? '<p class="text-gray-500 italic bg-gray-50 p-6 rounded-xl border border-gray-200">No pending requests.</p>' : ''}
+                                    <div class="space-y-4">
+                                        ${db.gatePasses.filter(p => p.status === 'Pending').map(p => `
+                                            <div class="border-2 border-gray-200 p-6 rounded-2xl bg-white shadow-sm">
+                                                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
+                                                    <span class="font-black text-2xl text-indigo-700">${p.studentId} <span class="text-base text-gray-500 font-semibold">(Room: ${p.roomNo || 'N/A'})</span></span>
+                                                    <span class="font-bold text-gray-600 bg-gray-100 px-3 py-1 rounded-lg">${p.days} Days</span>
+                                                </div>
+                                                <p class="text-xl font-extrabold mb-4 text-gray-800">Reason: ${p.reason}</p>
+                                                <div class="grid grid-cols-2 gap-4 text-sm text-gray-700 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                                    <div><b class="text-gray-900 block mb-1">Out:</b> ${p.outDate ? new Date(p.outDate).toLocaleString() : 'N/A'}</div>
+                                                    <div><b class="text-gray-900 block mb-1">In:</b> ${new Date(p.expectedReturn).toLocaleString()}</div>
+                                                    <div><b class="text-gray-900 block mb-1">Parent Mobile:</b> ${p.parentMobile || 'N/A'}</div>
+                                                    <div><b class="text-gray-900 block mb-1">Student Mobile:</b> ${p.studentMobile || 'N/A'}</div>
+                                                </div>
+                                                <div class="flex gap-4">
+                                                    <button onclick="approveGatePass('${p.id}', true)" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-xl font-extrabold text-lg shadow-md transition">Approve</button>
+                                                    <button onclick="approveGatePass('${p.id}', false)" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-xl font-extrabold text-lg shadow-md transition">Reject</button>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-extrabold text-xl text-gray-900 mb-6 uppercase tracking-widest border-b-2 border-gray-100 pb-3">Active Passes (Out of Campus)</h4>
+                                    ${db.gatePasses.filter(p => p.status === 'Approved' && !p.returned).length === 0 ? '<p class="text-gray-500 italic bg-gray-50 p-6 rounded-xl border border-gray-200">No active passes.</p>' : ''}
+                                    <div class="space-y-4">
+                                        ${db.gatePasses.filter(p => p.status === 'Approved' && !p.returned).map(p => `
+                                            <div class="bg-orange-50 p-6 rounded-2xl border-2 border-orange-200 shadow-sm">
+                                                <div class="flex justify-between items-center mb-2">
+                                                    <span class="font-black text-2xl text-orange-900">${p.studentId} <span class="text-base text-orange-700 font-semibold">(Room: ${p.roomNo || 'N/A'})</span></span>
+                                                    <span class="font-bold text-orange-800 bg-orange-100 px-3 py-1 rounded-lg border border-orange-200">${p.days} Days</span>
+                                                </div>
+                                                <p class="text-lg text-gray-700 font-semibold mb-4 bg-white p-3 rounded-lg border border-orange-100"><b class="text-gray-900">Parent Contact:</b> ${p.parentMobile || 'N/A'}</p>
+                                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end border-t-2 border-orange-200 pt-4 gap-4">
+                                                    <div class="w-full sm:w-auto">
+                                                        <span class="block text-sm text-gray-600 font-bold uppercase tracking-widest mb-1">Return Deadline:</span>
+                                                        <span class="font-black text-xl ${new Date() > new Date(p.expectedReturn) ? 'text-red-600' : 'text-orange-700'}">${new Date(p.expectedReturn).toLocaleString()}</span>
+                                                    </div>
+                                                    <button onclick="markReturn('${p.id}')" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-xl font-extrabold text-lg shadow-md transition">Mark Returned</button>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="w-messops" class="w-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-orange-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Mess Operations Overview</h3>
+                            <div class="grid lg:grid-cols-2 gap-10">
+                                <div class="bg-gray-50 p-6 rounded-2xl border-2 border-gray-100 shadow-sm">
+                                    <h4 class="font-extrabold text-2xl text-gray-900 mb-6">Today's Opt-Outs (Waste Reduction)</h4>
+                                    <ul class="space-y-4">
+                                        <li class="p-5 bg-white border-2 border-gray-200 rounded-xl flex justify-between items-center shadow-sm text-xl font-bold text-gray-700">
+                                            <span>Breakfast Skips:</span> <span class="font-black text-3xl text-orange-600 bg-orange-50 px-4 py-2 rounded-lg border border-orange-100">${db.mealOptOuts.filter(m => m.meal === 'Breakfast').length}</span>
+                                        </li>
+                                        <li class="p-5 bg-white border-2 border-gray-200 rounded-xl flex justify-between items-center shadow-sm text-xl font-bold text-gray-700">
+                                            <span>Lunch Skips:</span> <span class="font-black text-3xl text-orange-600 bg-orange-50 px-4 py-2 rounded-lg border border-orange-100">${db.mealOptOuts.filter(m => m.meal === 'Lunch').length}</span>
+                                        </li>
+                                        <li class="p-5 bg-white border-2 border-gray-200 rounded-xl flex justify-between items-center shadow-sm text-xl font-bold text-gray-700">
+                                            <span>Dinner Skips:</span> <span class="font-black text-3xl text-orange-600 bg-orange-50 px-4 py-2 rounded-lg border border-orange-100">${db.mealOptOuts.filter(m => m.meal === 'Dinner').length}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="bg-gray-50 p-6 rounded-2xl border-2 border-gray-100 shadow-sm flex flex-col max-h-[500px]">
+                                    <h4 class="font-extrabold text-2xl text-gray-900 mb-6">Recent Food Feedback</h4>
+                                    <div class="space-y-4 overflow-y-auto flex-1 pr-2">
+                                        ${db.foodFeedback.length === 0 ? '<p class="text-lg text-gray-500 italic bg-white p-4 rounded-lg border border-gray-200 text-center">No feedback submitted yet.</p>' : ''}
+                                        ${db.foodFeedback.map(fb => `
+                                            <div class="text-lg border-2 border-gray-200 bg-white p-4 rounded-xl shadow-sm flex flex-col gap-2">
+                                                <div class="flex justify-between items-center">
+                                                    <span class="font-black text-gray-900 text-xl">${fb.studentId}</span>
+                                                    <span class="text-sm font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded border">${fb.meal}</span>
+                                                </div>
+                                                <span class="text-yellow-500 text-2xl tracking-widest">${'⭐'.repeat(fb.rating)}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="w-alerts" class="w-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-red-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-red-700 flex items-center"><i class="fa-solid fa-bell mr-4"></i> System Alerts</h3>
+                            ${db.alerts.length === 0 ? '<p class="text-gray-500 text-xl italic bg-gray-50 p-8 border-2 rounded-2xl text-center">All clear. No alerts in the system.</p>' : ''}
+                            <div class="space-y-4">
+                                ${db.alerts.map(a => `
+                                    <div class="bg-red-50 p-6 rounded-2xl border-2 border-red-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <span class="font-black text-red-900 text-2xl">${a.type}</span>
+                                                <span class="font-bold text-lg bg-red-100 text-red-800 px-3 py-1 rounded-lg border border-red-200">ID: ${a.studentId}</span>
+                                            </div>
+                                            <p class="text-xl text-red-800 font-semibold">${a.message}</p>
+                                        </div>
+                                        <span class="text-sm text-red-600 font-bold bg-white px-4 py-2 rounded-lg border border-red-100 shrink-0 text-center">${a.time}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="w-monitor" class="w-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-green-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Hostel Attendance Monitor</h3>
+                            <div class="overflow-x-auto bg-white border-2 border-gray-200 rounded-xl">
+                                <table class="w-full text-left border-collapse text-lg">
+                                    <thead class="bg-gray-100 text-gray-900 border-b-2 border-gray-200">
+                                        <tr><th class="p-4 font-extrabold">Student ID</th><th class="p-4 font-extrabold">Room</th><th class="p-4 font-extrabold">Status</th><th class="p-4 font-extrabold">Action</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                                        ${db.students.map(s => `
+                                            <tr class="hover:bg-gray-50 transition">
+                                                <td class="p-4 font-black text-gray-900 text-xl">${s.id}</td>
+                                                <td class="p-4 text-gray-700 font-semibold">${s.room}</td>
+                                                <td class="p-4">
+                                                    <span class="${s.present ? 'text-green-800 bg-green-100 border-green-200' : 'text-red-800 bg-red-100 border-red-200'} border px-4 py-2 rounded-lg font-bold uppercase tracking-wider text-sm shadow-sm inline-block min-w-[100px] text-center">
+                                                        ${s.present ? 'Present' : 'Absent'}
+                                                    </span>
+                                                </td>
+                                                <td class="p-4">
+                                                    <button onclick="markAttendance('${s.id}')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-bold shadow-sm transition text-sm">Toggle Status</button>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="w-complaints" class="w-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-purple-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Manage Complaints</h3>
+                            <div class="overflow-x-auto bg-white border-2 border-gray-200 rounded-xl">
+                                <table class="w-full text-left text-lg border-collapse">
+                                    <thead class="bg-gray-100 text-gray-900 border-b-2 border-gray-200">
+                                        <tr><th class="p-4 font-extrabold">ID</th><th class="p-4 font-extrabold">Student</th><th class="p-4 font-extrabold">Issue Detail</th><th class="p-4 font-extrabold">Status</th><th class="p-4 font-extrabold">Action Options</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                                        ${db.complaints.length === 0 ? '<tr><td colspan="5" class="p-6 text-center text-gray-500 italic">No complaints logged.</td></tr>' : ''}
+                                        ${db.complaints.map(c => `
+                                            <tr class="hover:bg-gray-50 transition">
+                                                <td class="p-4 font-bold text-gray-600">${c.id}</td>
+                                                <td class="p-4 font-black text-gray-900">${c.studentId}</td>
+                                                <td class="p-4 text-gray-800"><span class="font-bold text-purple-700 bg-purple-50 px-2 py-1 rounded mr-2 border border-purple-100">${c.category}</span> ${c.desc}</td>
+                                                <td class="p-4">
+                                                    <span class="font-bold text-sm uppercase tracking-wider px-3 py-1.5 rounded-lg border ${c.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : c.status === 'Resolved' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-purple-100 text-purple-800 border-purple-200'}">${c.status}</span>
+                                                </td>
+                                                <td class="p-4 flex gap-2 flex-wrap">
+                                                    ${c.status === 'Pending' ? `<button onclick="updateComplaint('${c.id}', 'In Progress')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg font-bold text-sm shadow-sm transition">Mark In-Progress</button>` : ''}
+                                                    ${c.status === 'In Progress' ? `<button onclick="updateComplaint('${c.id}', 'Resolved')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg font-bold text-sm shadow-sm transition">Mark Resolved</button>` : ''}
+                                                    ${c.status === 'Resolved' ? `<span class="text-gray-400 font-semibold italic text-sm">Action Complete</span>` : ''}
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Room Cleaning Management -->
+                        <div id="w-cleaning" class="w-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-pink-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Room Cleaning Management</h3>
+                            <div class="overflow-x-auto bg-white border-2 border-gray-200 rounded-xl">
+                                <table class="w-full text-left text-lg border-collapse">
+                                    <thead class="bg-gray-100 text-gray-900 border-b-2 border-gray-200">
+                                        <tr><th class="p-4 font-extrabold border-b">Req ID</th><th class="p-4 font-extrabold border-b">Student ID</th><th class="p-4 font-extrabold border-b">Date & Time Slot</th><th class="p-4 font-extrabold border-b">Current Status</th><th class="p-4 font-extrabold border-b">Admin Action</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                                        ${db.cleaningRequests.length === 0 ? '<tr><td colspan="5" class="p-6 text-center text-gray-500 italic">No cleaning requests in queue.</td></tr>' : ''}
+                                        ${db.cleaningRequests.map(c => `
+                                            <tr class="hover:bg-gray-50 transition">
+                                                <td class="p-4 font-bold text-gray-600">${c.id}</td>
+                                                <td class="p-4 font-black text-gray-900 text-xl">${c.studentId}</td>
+                                                <td class="p-4 text-gray-800 font-bold">${c.date} <br><span class="text-gray-500 font-medium text-base">${c.timeSlot}</span></td>
+                                                <td class="p-4">
+                                                    <span class="font-bold text-sm uppercase tracking-wider px-3 py-1.5 rounded-lg border ${c.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-green-100 text-green-800 border-green-200'}">${c.status}</span>
+                                                </td>
+                                                <td class="p-4">
+                                                    ${c.status === 'Pending' ? `<button onclick="updateCleaningStatus('${c.id}', 'Completed')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-green-700 transition flex items-center gap-2"><i class="fa-solid fa-check"></i> Mark Done</button>` : `<div class="bg-gray-100 text-green-700 px-4 py-2 rounded-lg text-sm font-bold inline-flex items-center gap-2 border border-gray-200"><i class="fa-solid fa-check-double"></i> Completed</div>`}
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Parent Messages Inbox -->
+                        <div id="w-messages" class="w-tab hidden bg-white p-8 md:p-10 rounded-2xl shadow-xl border-t-8 border-indigo-500">
+                            <h3 class="text-3xl font-extrabold mb-8 text-gray-900">Parent Messages Inbox</h3>
+                            ${db.parentMessages.length === 0 ? '<p class="text-xl text-gray-500 italic bg-gray-50 p-8 rounded-2xl border-2 text-center">No messages from parents in inbox.</p>' : ''}
+                            <div class="grid lg:grid-cols-2 gap-6">
+                                ${db.parentMessages.map(m => `
+                                    <div class="p-6 border-2 rounded-2xl flex flex-col justify-between ${m.status === 'Unread' ? 'bg-indigo-50 border-indigo-200 shadow-md' : 'bg-white border-gray-200 shadow-sm'}">
+                                        <div>
+                                            <div class="flex justify-between items-start mb-4 gap-4">
+                                                <span class="font-extrabold text-gray-900 text-xl flex items-center bg-white px-3 py-1.5 rounded-lg shadow-sm border border-gray-100"><i class="fa-solid fa-user-group text-indigo-500 mr-3"></i> Parent of: <span class="text-indigo-700 ml-2">${m.studentId}</span></span>
+                                                <span class="text-sm font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-lg border whitespace-nowrap">${m.date}</span>
+                                            </div>
+                                            <p class="text-gray-800 text-lg mb-6 bg-white p-4 border border-gray-100 rounded-xl shadow-inner font-medium">"${m.message}"</p>
+                                        </div>
+                                        <div class="text-right mt-auto">
+                                            ${m.status === 'Unread' ? `<button onclick="markMessageRead('${m.id}')" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-extrabold text-lg shadow-md transition transform hover:-translate-y-1 active:scale-95 cursor-pointer flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i> Acknowledge Read</button>` : `<span class="text-sm text-green-700 font-extrabold bg-green-50 px-4 py-2 rounded-lg border border-green-200 uppercase tracking-widest inline-flex items-center gap-2 w-full sm:w-auto justify-center cursor-default"><i class="fa-solid fa-check-double"></i> Acknowledged</span>`}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- MODAL UTILS ---
+        function openModal(role) {
+            document.getElementById('loginModal').classList.remove('hidden');
+            setRole(role);
+        }
+        
+        function closeModal() { 
+            document.getElementById('loginModal').classList.add('hidden'); 
+        }
+        
+        function setRole(role) {
+            db.currentRole = role;
+            const sBtn = document.getElementById('role-student');
+            const pBtn = document.getElementById('role-parent'); 
+            const wBtn = document.getElementById('role-warden');
+            const loginInput = document.getElementById('loginId');
+            
+            sBtn.className = pBtn.className = wBtn.className = 'flex-1 py-3 text-lg font-bold text-gray-500 bg-transparent';
+            
+            if(role === 'student') {
+                sBtn.className = 'flex-1 py-3 text-lg font-bold bg-white rounded-lg shadow-sm text-gray-900 border border-gray-200';
+                loginInput.placeholder = "Any ID (e.g. S101)";
+            } else if (role === 'parent') {
+                pBtn.className = 'flex-1 py-3 text-lg font-bold bg-white rounded-lg shadow-sm text-gray-900 border border-gray-200';
+                loginInput.placeholder = "Ward's ID (e.g. S101)";
+            } else {
+                wBtn.className = 'flex-1 py-3 text-lg font-bold bg-white rounded-lg shadow-sm text-gray-900 border border-gray-200';
+                loginInput.placeholder = "Warden ID (Any)";
+            }
+        }
+
+        // --- PROFILE LOGIC ---
+        function openProfileModal(isEdit = false) {
+            document.getElementById('profileModal').classList.remove('hidden');
+            
+            const roleEl = document.getElementById('profRoleDisplay');
+            const contentEl = document.getElementById('profileContent');
+            
+            if (db.currentRole === 'student') {
+                const s = db.students.find(x => x.id === db.currentUser);
+                roleEl.innerText = "Student Account";
+                
+                if (isEdit) {
+                    contentEl.innerHTML = `
+                        <form onsubmit="saveProfile(event, 'student')" class="space-y-6">
+                            <div><label class="text-sm font-bold uppercase tracking-wider text-gray-600 block mb-2">Full Name</label><input type="text" id="editName" value="${s.name}" class="w-full border-2 border-gray-300 p-4 rounded-xl text-lg font-semibold text-gray-900 focus:border-indigo-500 outline-none" required></div>
+                            <div><label class="text-sm font-bold uppercase tracking-wider text-gray-600 block mb-2">Mobile No.</label><input type="tel" id="editMobile" value="${s.mobile}" class="w-full border-2 border-gray-300 p-4 rounded-xl text-lg font-semibold text-gray-900 focus:border-indigo-500 outline-none" required></div>
+                            <div><label class="text-sm font-bold uppercase tracking-wider text-gray-600 block mb-2">Registered Email</label><input type="email" id="editEmail" value="${s.email}" class="w-full border-2 border-gray-300 p-4 rounded-xl text-lg font-semibold text-gray-900 focus:border-indigo-500 outline-none" required></div>
+                            <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8">
+                                <button type="button" onclick="openProfileModal(false)" class="w-full sm:w-auto px-8 py-4 bg-gray-200 hover:bg-gray-300 rounded-xl font-extrabold text-lg text-gray-800 transition">Cancel</button>
+                                <button type="submit" class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-extrabold text-lg shadow-lg transition">Save Changes</button>
+                            </div>
+                        </form>
+                    `;
+                } else {
+                    contentEl.innerHTML = `
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Full Name</span> <span class="font-extrabold text-gray-900 text-xl">${s.name}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Student ID</span> <span class="font-extrabold text-gray-900 text-xl">${s.id}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Allocated Room</span> <span class="font-extrabold text-gray-900 text-xl">${s.room}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Dietary Profile</span> <span class="font-extrabold text-gray-900 text-xl">${s.diet}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Mobile No.</span> <span class="font-extrabold text-gray-900 text-xl">${s.mobile}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Registered Email</span> <span class="font-extrabold text-gray-900 text-xl">${s.email}</span></div>
+                        <div class="mt-8 text-center"><button onclick="openProfileModal(true)" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-6 py-4 rounded-xl font-extrabold text-lg shadow-sm transition">Edit Profile Data</button></div>
+                    `;
+                }
+            } else if (db.currentRole === 'parent') {
+                const s = db.students.find(x => x.id === db.currentUser);
+                roleEl.innerText = "Parent / Guardian Account";
+
+                if (isEdit) {
+                    contentEl.innerHTML = `
+                        <form onsubmit="saveProfile(event, 'parent')" class="space-y-6">
+                            <div><label class="text-sm font-bold uppercase tracking-wider text-gray-600 block mb-2">Registered Mobile</label><input type="tel" id="editParentMobile" value="${s.parentMobile}" class="w-full border-2 border-gray-300 p-4 rounded-xl text-lg font-semibold text-gray-900 focus:border-indigo-500 outline-none" required></div>
+                            <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8">
+                                <button type="button" onclick="openProfileModal(false)" class="w-full sm:w-auto px-8 py-4 bg-gray-200 hover:bg-gray-300 rounded-xl font-extrabold text-lg text-gray-800 transition">Cancel</button>
+                                <button type="submit" class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-extrabold text-lg shadow-lg transition">Save Changes</button>
+                            </div>
+                        </form>
+                    `;
+                } else {
+                    contentEl.innerHTML = `
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Linked Ward Name</span> <span class="font-extrabold text-gray-900 text-xl">${s.name}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Ward Student ID</span> <span class="font-extrabold text-gray-900 text-xl">${s.id}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Registered Mobile</span> <span class="font-extrabold text-gray-900 text-xl">${s.parentMobile}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Emergency Contact</span> <span class="font-extrabold text-green-600 bg-green-50 px-3 py-1 border border-green-200 rounded-lg text-lg inline-block">Verified</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Notification Pref.</span> <span class="font-extrabold text-gray-900 text-xl">SMS & App Push</span></div>
+                        <div class="mt-8 text-center"><button onclick="openProfileModal(true)" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-6 py-4 rounded-xl font-extrabold text-lg shadow-sm transition">Edit Contact Info</button></div>
+                    `;
+                }
+            } else {
+                roleEl.innerText = "Hostel Admin / Warden";
+
+                if (isEdit) {
+                    contentEl.innerHTML = `
+                        <form onsubmit="saveProfile(event, 'warden')" class="space-y-6">
+                            <div><label class="text-sm font-bold uppercase tracking-wider text-gray-600 block mb-2">Warden Name</label><input type="text" id="editWardenName" value="${db.wardenProfile.name}" class="w-full border-2 border-gray-300 p-4 rounded-xl text-lg font-semibold text-gray-900 focus:border-indigo-500 outline-none" required></div>
+                            <div><label class="text-sm font-bold uppercase tracking-wider text-gray-600 block mb-2">Assigned Zone</label><input type="text" id="editWardenZone" value="${db.wardenProfile.zone}" class="w-full border-2 border-gray-300 p-4 rounded-xl text-lg font-semibold text-gray-900 focus:border-indigo-500 outline-none" required></div>
+                            <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8">
+                                <button type="button" onclick="openProfileModal(false)" class="w-full sm:w-auto px-8 py-4 bg-gray-200 hover:bg-gray-300 rounded-xl font-extrabold text-lg text-gray-800 transition">Cancel</button>
+                                <button type="submit" class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-extrabold text-lg shadow-lg transition">Save Changes</button>
+                            </div>
+                        </form>
+                    `;
+                } else {
+                    contentEl.innerHTML = `
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Warden Name</span> <span class="font-extrabold text-gray-900 text-xl">${db.wardenProfile.name}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Warden ID</span> <span class="font-extrabold text-gray-900 text-xl">${db.currentUser}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Access Level</span> <span class="font-extrabold text-indigo-700 bg-indigo-50 px-3 py-1 border border-indigo-200 rounded-lg text-lg inline-block">Super Admin</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b-2 border-gray-200 pb-4 mb-4 gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">Assigned Zone</span> <span class="font-extrabold text-gray-900 text-xl">${db.wardenProfile.zone}</span></div>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2"><span class="font-bold text-gray-500 uppercase tracking-wider text-sm">System Permissions</span> <span class="font-extrabold text-gray-900 text-xl">All Modules Unlocked</span></div>
+                        <div class="mt-8 text-center"><button onclick="openProfileModal(true)" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-6 py-4 rounded-xl font-extrabold text-lg shadow-sm transition">Edit Administrator Profile</button></div>
+                    `;
+                }
+            }
+        }
+
+        async function saveProfile(event, role) {
+            event.preventDefault();
+
+            try {
+                if (role === 'student') {
+                    const s = db.students.find(x => x.id === db.currentUser);
+                    const updated = {
+                        ...s,
+                        name: document.getElementById('editName').value,
+                        mobile: document.getElementById('editMobile').value,
+                        email: document.getElementById('editEmail').value
+                    };
+                    const saved = await apiPut(`/students/${encodeURIComponent(db.currentUser)}`, updated);
+                    Object.assign(s, saved);
+                } else if (role === 'parent') {
+                    const s = db.students.find(x => x.id === db.currentUser);
+                    const updated = { ...s, parentMobile: document.getElementById('editParentMobile').value };
+                    const saved = await apiPut(`/students/${encodeURIComponent(db.currentUser)}`, updated);
+                    Object.assign(s, saved);
+                } else if (role === 'warden') {
+                    const updated = {
+                        ...db.wardenProfile,
+                        name: document.getElementById('editWardenName').value,
+                        zone: document.getElementById('editWardenZone').value
+                    };
+                    db.wardenProfile = await apiPut('/warden-profile', updated);
+                }
+
+                openProfileModal(false);
+                refreshDashboard();
+            } catch (err) {
+                alert('Failed to save profile.\n' + err.message);
+            }
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
